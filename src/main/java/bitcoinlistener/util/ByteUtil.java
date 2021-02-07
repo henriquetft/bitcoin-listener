@@ -27,16 +27,6 @@ public class ByteUtil {
 		return ret;
 	}
 
-	public static byte[] sha256(byte[] arr) {
-		try {
-			MessageDigest digest = MessageDigest.getInstance("SHA-256");
-			byte[] hash = digest.digest(arr);
-			return hash;
-		} catch (NoSuchAlgorithmException e) {
-			throw new RuntimeException(e);
-		}
-	}
-
 	public static String bytesToHex(byte[] bytes) {
 		StringBuffer result = new StringBuffer();
 		for (byte byt : bytes)

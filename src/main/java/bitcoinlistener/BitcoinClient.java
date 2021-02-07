@@ -24,6 +24,7 @@ import bitcoinlistener.messages.TxMessage;
 import bitcoinlistener.messages.Verack;
 import bitcoinlistener.messages.VersionMessage;
 import bitcoinlistener.util.ByteUtil;
+import bitcoinlistener.util.HashUtil;
 
 
 public class BitcoinClient implements BitcoinConnection {
@@ -45,8 +46,10 @@ public class BitcoinClient implements BitcoinConnection {
 	
 	private static final Logger log = LoggerFactory.getLogger(BitcoinClient.class);
 	
-	public static final int MY_VERSION = 31800; // Bitcoin Core 0.3.18 (Dec 2010)
+	public static final int MY_VERSION = 70001; // Bitcoin Core 0.8.0 (Feb 2013) with BIP37
+	// public static final int MY_VERSION = 31800; // Bitcoin Core 0.3.18 (Dec 2010)
 	// public static final int MY_VERSION = 70015; // Bitcoin Core 0.13.2 (Jan 2017)
+
 	public static final String MY_SUBVERSION = "bitcoinlistener";
 
 	private BitcoinBuffer buffer = new BitcoinBuffer(1000);
@@ -156,7 +159,7 @@ public class BitcoinClient implements BitcoinConnection {
 
 		if (this.protover >= 209) {
 			byte[] checksum = new byte[4];
-			System.arraycopy(ByteUtil.sha256(ByteUtil.sha256(buf)), 0, checksum, 0, 4);
+			System.arraycopy(HashUtil.sha256(HashUtil.sha256(buf)), 0, checksum, 0, 4);
 			buffer.putBytes(checksum);
 		}
 

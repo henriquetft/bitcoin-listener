@@ -8,6 +8,7 @@ import bitcoinlistener.ProtocolMessage;
 import bitcoinlistener.datatypes.TxIn;
 import bitcoinlistener.datatypes.TxOut;
 import bitcoinlistener.util.ByteUtil;
+import bitcoinlistener.util.HashUtil;
 
 public class TxMessage implements ProtocolMessage {
 
@@ -45,7 +46,7 @@ public class TxMessage implements ProtocolMessage {
 		byte[] data = new byte[rawData.length];
 		System.arraycopy(rawData, 0, data, 0, data.length);
 
-		data = ByteUtil.sha256(ByteUtil.sha256(data));
+		data = HashUtil.sha256(HashUtil.sha256(data));
 		ByteUtil.invertArray(data);
 		return ByteUtil.bytesToHex(data);
 	}

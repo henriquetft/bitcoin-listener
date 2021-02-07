@@ -3,6 +3,7 @@ package bitcoinlistener.util;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.util.Arrays;
 
 public class MyBuffer {
 
