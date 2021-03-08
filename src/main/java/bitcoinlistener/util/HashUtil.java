@@ -18,4 +18,10 @@ public class HashUtil {
 		int h1 = MurmurHash3.murmurhash3x8632(data, 0, data.length, (int) (hashNum * 0xFBA4C795L + nTweak));
 		return (int) ((h1 & 0xFFFFFFFFL) % nbits);
 	}
+
+	public static byte[] sha256(byte[] data, int offset, int length) {
+		byte[] arr = new byte[length-offset];
+		System.arraycopy(data, 0, arr, 0, arr.length);
+		return sha256(arr);
+	}
 }

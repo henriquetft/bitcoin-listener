@@ -2,11 +2,13 @@
 package bitcoinlistener;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
 import java.nio.ByteOrder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,15 +16,19 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import bitcoinlistener.ConnectionListener.ConnectionEvent;
 import bitcoinlistener.datatypes.InvObject;
 import bitcoinlistener.datatypes.TxIn;
 import bitcoinlistener.datatypes.TxOut;
+import bitcoinlistener.messages.FilterLoadMessage;
 import bitcoinlistener.messages.GetDataMessage;
 import bitcoinlistener.messages.InvMessage;
 import bitcoinlistener.messages.PingMessage;
 import bitcoinlistener.messages.TxMessage;
 import bitcoinlistener.messages.Verack;
 import bitcoinlistener.messages.VersionMessage;
+import bitcoinlistener.util.AddressUtil;
+import bitcoinlistener.util.BloomFilter;
 import bitcoinlistener.util.ByteUtil;
 import bitcoinlistener.util.HashUtil;
 
@@ -37,7 +43,6 @@ public class BitcoinClient implements BitcoinConnection {
 	2021-01-10T12:16:22Z Loading addresses from DNS seed dnsseed.bluematt.me
 	2021-01-10T12:16:23Z Loading addresses from DNS seed dnsseed.emzy.de
 	2021-01-10T12:16:25Z Loading addresses from DNS seed seed.bitcoinstats.com
-
 	 */
 
 	// https://en.bitcoin.it/wiki/Protocol_documentation
@@ -46,11 +51,11 @@ public class BitcoinClient implements BitcoinConnection {
 	
 	private static final Logger log = LoggerFactory.getLogger(BitcoinClient.class);
 	
-	public static final int MY_VERSION = 70001; // Bitcoin Core 0.8.0 (Feb 2013) with BIP37
+	//public static final int MY_VERSION = 70001; // Bitcoin Core 0.8.0 (Feb 2013) with BIP37
 	// public static final int MY_VERSION = 31800; // Bitcoin Core 0.3.18 (Dec 2010)
-	// public static final int MY_VERSION = 70015; // Bitcoin Core 0.13.2 (Jan 2017)
+	public static final int MY_VERSION = 70015; // Bitcoin Core 0.13.2 (Jan 2017)
 
-	public static final String MY_SUBVERSION = "bitcoinlistener";
+	public static final String MY_SUBVERSION = "/bitcoinlistener:0.0.1/";
 
 	private BitcoinBuffer buffer = new BitcoinBuffer(1000);
 	private int protover = 209;
@@ -59,8 +64,12 @@ public class BitcoinClient implements BitcoinConnection {
 	private Socket sock;
 	private String ip;
 	private int port;
-	private List<TransactionListener> txListeners = new ArrayList<TransactionListener>();
+	private List<TransactionListener> txListeners = new ArrayList<>();
+	private List<ConnectionListener> connListeners = new ArrayList<>();
 
+	private BloomFilter filter;
+	private List<String> filtered = new ArrayList<>();
+	private FilterConfig filterConfig;
 	
 	private static Map<String, Class<? extends ProtocolMessage>> protocolMessages;
 	static {
@@ -69,6 +78,7 @@ public class BitcoinClient implements BitcoinConnection {
 		protocolMessages.put("inv", InvMessage.class);
 		protocolMessages.put("ping", PingMessage.class);
 		protocolMessages.put("tx", TxMessage.class);
+		protocolMessages.put("verack", Verack.class);
 	}
 
 
@@ -76,6 +86,9 @@ public class BitcoinClient implements BitcoinConnection {
 		this.ip = ip;
 		this.port = port;
 		this.params = net;
+		
+		this.filterConfig = new FilterConfig();
+		this.filterConfig.setFalsePositiveRate(0.0001);
 	}
 	
 	@Override
@@ -109,6 +122,7 @@ public class BitcoinClient implements BitcoinConnection {
 		log.info("Network: {}", params.getName());
 		this.sock = new Socket(ip, port);
 		log.info("Connected successfully!");
+		fireConnectionEvent(ConnectionListener.ConnectionEvent.Connected);
 		this.out = sock.getOutputStream();
 
 		Thread.sleep(500L);
@@ -123,12 +137,12 @@ public class BitcoinClient implements BitcoinConnection {
 
 		
 		readData();
+		// fire disconnect event ?
 	}
 
 
 
-
-	public void sendMessage(ProtocolMessage msg) throws Exception {
+	public void sendMessage(ProtocolMessage msg) {
 		/*
 		 * Message structure
 		 * Field Size 	Description 	Data type 	
@@ -169,13 +183,50 @@ public class BitcoinClient implements BitcoinConnection {
 		
 		
 		log.debug("+++ Sending message '{}': {}", command, ByteUtil.toHexString(arr));
-		this.out.write(arr);
-		this.out.flush();
+		try {
+			this.out.write(arr);
+			this.out.flush();
+		} catch (IOException e) {
+			if (!this.sock.isConnected()) {
+				fireConnectionEvent(ConnectionEvent.Disconnected);
+			}
+			throw new RuntimeException(e);
+		}
 	}
 	
 	public void addTransactionListener(TransactionListener txListener) {
 		txListeners.add(txListener);
 	}
+	
+	public void addConnectionListener(ConnectionListener connListener) {
+		connListeners.add(connListener);
+	}
+	
+	
+	@Override
+	public void addFilter(String address) {
+		List<String> arr = new ArrayList<>();
+		arr.add(address);
+		addFilter(arr);
+	}
+	
+	@Override
+	public void addFilter(List<String> addresses) {
+		filtered.addAll(addresses);
+		sendBloomFilter(filtered);
+	}
+	
+	@Override
+	public void setFilterConfig(FilterConfig filterConfig) {
+		this.filterConfig = filterConfig;
+		
+	}
+
+	@Override
+	public FilterConfig getFilterConfig() {
+		return this.filterConfig;
+	}
+
 	
 	
 	// =============================================================================================
@@ -250,6 +301,7 @@ public class BitcoinClient implements BitcoinConnection {
 						ByteUtil.toHexString(recvBuf.toByteArray()));
 			}
 		}
+		// FIXME in = -1 ?
 	}
 
 	
@@ -266,8 +318,10 @@ public class BitcoinClient implements BitcoinConnection {
 		ProtocolMessage m = clazz.newInstance();
 		m.loadFromBuffer(messageBuffer);
 		
-		
-		if (m instanceof VersionMessage) {
+		if (m instanceof Verack) {
+			fireConnectionEvent(ConnectionEvent.Verack);
+			
+		} else if (m instanceof VersionMessage) {
 			VersionMessage v = (VersionMessage) m;
 			this.protover = Math.min(v.getVersion(), MY_VERSION);
 			if (this.protover >= 209) {
@@ -311,4 +365,33 @@ public class BitcoinClient implements BitcoinConnection {
 			}
 		}
 	}
+	
+	private void fireConnectionEvent(ConnectionEvent event) {
+		for (ConnectionListener connListener : connListeners) {
+			connListener.event(event, this);
+		}
+	}
+
+	private void sendBloomFilter(List<String> addressList) {
+
+		this.filter = new BloomFilter(addressList.size(), filterConfig.getFalsePositiveRate(),
+				System.currentTimeMillis());
+		
+		for (String addr : addressList) {
+			byte[] bytes = AddressUtil.getAddrHash(addr);
+			
+			this.filter.insert(bytes);
+			log.debug("Inserting {} to bloom filter", Arrays.toString(bytes));
+		}
+
+		
+		FilterLoadMessage filterLoadMessage = new FilterLoadMessage(filter.getArray(),
+		                                                            filter.getNumberOfHashFuncs(),
+		                                                            filter.getNonce(),
+		                                                            (byte) 2); // BLOOM_UPDATE_P2PUBKEY_ONLY
+
+		sendMessage(filterLoadMessage);
+		
+	}
+
 }

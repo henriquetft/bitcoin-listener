@@ -16,6 +16,6 @@ public class Verack implements ProtocolMessage {
 
 	@Override
 	public void loadFromBuffer(BitcoinBuffer buf) {
-		throw new RuntimeException("not implemented");
+		//throw new RuntimeException("not implemented");
 	}
 }
