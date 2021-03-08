@@ -15,12 +15,14 @@ public class BloomFilter {
 	private int numberOfHashFuncs;
 	private long nonce;
 	private int nbits;
+	private int sizeInBytes;
 
 	public BloomFilter(int numElements, double falsePositiveRate, long nonce) {
-		int size = (int) (-1 / (Math.pow(Math.log(2), 2)) * numElements * Math.log(falsePositiveRate));
-		size = Math.max(1, Math.min(size, (int) MAX_FILTER_SIZE * 8) / 8);
-		this.nbits = size * 8;
-		this.bitset = new BitSet(nbits);
+		sizeInBytes = (int) (-1 / (Math.pow(Math.log(2), 2)) * numElements * Math.log(falsePositiveRate));
+		sizeInBytes = Math.max(1, Math.min(sizeInBytes, (int) MAX_FILTER_SIZE * 8) / 8);
+		this.nbits = sizeInBytes * 8;
+		this.bitset = new BitSet();
+
 		numberOfHashFuncs = (int) (nbits / (double) numElements * Math.log(2));
 		numberOfHashFuncs = Math.max(1, Math.min(numberOfHashFuncs, MAX_NUM_HASH_FUNCS));
 		this.nonce = nonce;
@@ -68,6 +70,10 @@ public class BloomFilter {
 	}
 	
 	public byte[] getArray() {
-		return bitset.toByteArray();
+		byte[] result = new byte[sizeInBytes];
+		byte[] bitsetArr = bitset.toByteArray();
+		System.arraycopy(bitsetArr, 0, result, 0, bitsetArr.length);
+		//System.out.println(result.length + " / " + nbits/8);
+		return result;
 	}
 }
