@@ -1,0 +1,12 @@
+bitcoin-listener
+Copyright (c) 2021, bitcoin-listener contributors
+All rights reserved.
+
+
+============================================================================
+Third-party software
+============================================================================
+
+This product includes software from the bitcoinj project (Apache License).
+ * Copyright 2011 Google Inc.
+ * Copyright 2018 Andreas Schildbach
