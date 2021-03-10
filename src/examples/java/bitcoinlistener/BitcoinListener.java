@@ -5,31 +5,43 @@ import java.util.List;
 
 import bitcoinlistener.messages.TxMessage;
 
+/**
+ * Sample Usage.
+ * 
+ * Connecting to a bitcoin node and receiving new events.
+ *
+ */
 public class BitcoinListener {
 
+	// Setting up logging system
     static {
         String path = BitcoinClient.class.getClassLoader().getResource("logging.properties").getFile();
         System.setProperty("java.util.logging.config.file", path);
     }
     
+    private static final String IP = "localhost";
+    private static final int PORT = 8333;
+    private static final NetworkParameters NETWORK = NetworkParameters.TestNet3;
+    
+    
 	public static void main(String[] args) throws Exception {
 		
-		BitcoinClient c = new BitcoinClient("localhost", 8333, NetworkParameters.TestNet3);
+		BitcoinClient c = new BitcoinClient(IP, PORT, NETWORK);
 		
 		c.addConnectionListener(new ConnectionListener() {
 			@Override
 			public void event(ConnectionEvent event, BitcoinConnection conn) {
+				
+				// After connection is open and both peers have exchanged their version
 				if (event == ConnectionEvent.Verack) {
-					//bitcoind --testnet -debug=net -peerbloomfilters=1
-					
 					List<String> list = new ArrayList<>();
-					list.add("mxq6Fg4ygVU8tdHRvUifPzQFsQJX4XEamF");
-					list.add("n4ZdjM5zSU8ujvLz8KkCEzmtnT7uHEVoMV");
+					list.add("muBB8CVDwX3ujEZ9LgahA3ebx38buaJp1Y");
 					conn.addFilter(list);
 				}
 			}
 		});
 		
+		// Setting up an observer to recieve new transactions
 		c.addTransactionListener(new TransactionListener() {
 			@Override
 			public void onTransaction(TxMessage tx, BitcoinConnection conn) {

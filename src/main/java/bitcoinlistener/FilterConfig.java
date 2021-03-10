@@ -2,8 +2,8 @@ package bitcoinlistener;
 
 public class FilterConfig {
 	
+	/** Bloom filter false positive rate */
 	private double falsePositiveRate;
-	
 	
 	public double getFalsePositiveRate() {
 		return falsePositiveRate;
