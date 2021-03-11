@@ -22,7 +22,7 @@ public class FilterLoadMessageTest {
 		f.insert("oi!".getBytes());
 		
 		FilterLoadMessage m = new FilterLoadMessage();
-		m.setFilter(f.getArray());
+		m.setFilter(f.getAsArray());
 		m.setNumHashFuncs(f.getNumberOfHashFuncs());
 		m.setTweak(f.getNonce());
 		m.setFlags((byte) 2); // BLOOM_UPDATE_P2PUBKEY_ONLY
@@ -61,7 +61,7 @@ public class FilterLoadMessageTest {
 		
 		filter.insert(data);
 		
-		FilterLoadMessage filterLoadMessage = new FilterLoadMessage(filter.getArray(),
+		FilterLoadMessage filterLoadMessage = new FilterLoadMessage(filter.getAsArray(),
                 filter.getNumberOfHashFuncs(),
                 filter.getNonce(),
                 (byte) 2); // BLOOM_UPDATE_P2PUBKEY_ONLY
@@ -84,7 +84,7 @@ public class FilterLoadMessageTest {
 		byte[] data2 = new byte[] { -4, -52, -91, 0, -127, 28, -15, -61, -51, -84, 87, -74, -115, 86, 29, -78, 125, 116, 70, -36 };
 		filter.insert(data2);
 		
-		FilterLoadMessage filterLoadMessage = new FilterLoadMessage(filter.getArray(),
+		FilterLoadMessage filterLoadMessage = new FilterLoadMessage(filter.getAsArray(),
                 filter.getNumberOfHashFuncs(),
                 filter.getNonce(),
                 (byte) 2); // BLOOM_UPDATE_P2PUBKEY_ONLY
@@ -94,34 +94,33 @@ public class FilterLoadMessageTest {
 	
 	@Test
 	public void testSerializeFilterSeveralAddresses() {
-		byte[] exp = new byte[] {
-				29, -114, 52, 2, -32, 1, 1, 43, 32, 0, 69, 16, 84, 17, 36, 4, 1, 80, 0, 52, -124, -124, 0, 0, 0, 10, 0, 72, 9, 0, 3, 0, 0, 0, 0, 0, -28, -21, 2
-		};
+		byte[] exp = new byte[] { 29, -114, 52, 2, -32, 1, 1, 43, 32, 0, 69, 16, 84, 17, 36, 4, 1, 80, 0, 52, -124,
+		                         -124, 0, 0, 0, 10, 0, 72, 9, 0, 3, 0, 0, 0, 0, 0, -28, -21, 2 };
 		
-		BloomFilter abc = new BloomFilter(50, 0.1, 3721879741953998848L);
-		abc.insert(AddressUtil.getAddrHash("n168B6uhamUj4tDSHNzJeGWhvytagKXS2k"));
-		abc.insert(AddressUtil.getAddrHash("n1JfXfeafcJKpRbRVQ7FrH3m2D9TWcAPHy"));
-		abc.insert(AddressUtil.getAddrHash("mi11rWuB14Eb2L5tpdqfD77DGMhschQdgx"));
-		abc.insert(AddressUtil.getAddrHash("mrENFxivvKRDUQaSungyhXFuWCq7hfncPd"));
-		abc.insert(AddressUtil.getAddrHash("mxq6Fg4ygVU8tdHRvUifPzQFsQJX4XEamF"));
-		abc.insert(AddressUtil.getAddrHash("mz84Ud7WBib8kkCDd7bVyM1HM57hiRjwYQ"));
-		abc.insert(AddressUtil.getAddrHash("mfYUXMc9Rb4NcCUj1iLCqwMLPS95VBLSMQ"));
-		abc.insert(AddressUtil.getAddrHash("moeR4SWuRovHYid16onoNDzfEZZsM3fcMx"));
-		abc.insert(AddressUtil.getAddrHash("mtwmhmx2TC8fjaoHwtKcar9eTk2WjN8BtF"));
-		abc.insert(AddressUtil.getAddrHash("mvQeLdgYBxVi11nE38DM2BkJu7vE161Mqr"));
-		abc.insert(AddressUtil.getAddrHash("mz4XH5MzLBaEuA8FpeYenGPGXrHx7EADX1"));
-		abc.insert(AddressUtil.getAddrHash("mxCofGx6G5BLe8S912sZBiUzZb5iWhXwbe"));
-		abc.insert(AddressUtil.getAddrHash("n4ZdjM5zSU8ujvLz8KkCEzmtnT7uHEVoMV"));
-		abc.insert(AddressUtil.getAddrHash("n4CWwXNJ9CgM9DyVicnckuewUjGSQwk6rQ"));
-		abc.insert(AddressUtil.getAddrHash("mweUsjmG1uPJiraP9f7wmhZYFBYWDnaGB6"));
-		abc.insert(AddressUtil.getAddrHash("micrYVxKWQwK61QJrgEhb4onpvDJusJnjG"));
-		abc.insert(AddressUtil.getAddrHash("mjGdPxxmaEBY41JhqnfZoA2FV4rJXFz2Mx"));
-		abc.insert(AddressUtil.getAddrHash("n4gfEwEsHaRtodLFYGu621nW9KVSHeMkgX"));
+		BloomFilter filter = new BloomFilter(50, 0.1, 3721879741953998848L);
+		filter.insert(AddressUtil.getAddrHash("n168B6uhamUj4tDSHNzJeGWhvytagKXS2k"));
+		filter.insert(AddressUtil.getAddrHash("n1JfXfeafcJKpRbRVQ7FrH3m2D9TWcAPHy"));
+		filter.insert(AddressUtil.getAddrHash("mi11rWuB14Eb2L5tpdqfD77DGMhschQdgx"));
+		filter.insert(AddressUtil.getAddrHash("mrENFxivvKRDUQaSungyhXFuWCq7hfncPd"));
+		filter.insert(AddressUtil.getAddrHash("mxq6Fg4ygVU8tdHRvUifPzQFsQJX4XEamF"));
+		filter.insert(AddressUtil.getAddrHash("mz84Ud7WBib8kkCDd7bVyM1HM57hiRjwYQ"));
+		filter.insert(AddressUtil.getAddrHash("mfYUXMc9Rb4NcCUj1iLCqwMLPS95VBLSMQ"));
+		filter.insert(AddressUtil.getAddrHash("moeR4SWuRovHYid16onoNDzfEZZsM3fcMx"));
+		filter.insert(AddressUtil.getAddrHash("mtwmhmx2TC8fjaoHwtKcar9eTk2WjN8BtF"));
+		filter.insert(AddressUtil.getAddrHash("mvQeLdgYBxVi11nE38DM2BkJu7vE161Mqr"));
+		filter.insert(AddressUtil.getAddrHash("mz4XH5MzLBaEuA8FpeYenGPGXrHx7EADX1"));
+		filter.insert(AddressUtil.getAddrHash("mxCofGx6G5BLe8S912sZBiUzZb5iWhXwbe"));
+		filter.insert(AddressUtil.getAddrHash("n4ZdjM5zSU8ujvLz8KkCEzmtnT7uHEVoMV"));
+		filter.insert(AddressUtil.getAddrHash("n4CWwXNJ9CgM9DyVicnckuewUjGSQwk6rQ"));
+		filter.insert(AddressUtil.getAddrHash("mweUsjmG1uPJiraP9f7wmhZYFBYWDnaGB6"));
+		filter.insert(AddressUtil.getAddrHash("micrYVxKWQwK61QJrgEhb4onpvDJusJnjG"));
+		filter.insert(AddressUtil.getAddrHash("mjGdPxxmaEBY41JhqnfZoA2FV4rJXFz2Mx"));
+		filter.insert(AddressUtil.getAddrHash("n4gfEwEsHaRtodLFYGu621nW9KVSHeMkgX"));
 		
-		FilterLoadMessage filterLoadMessage = new FilterLoadMessage(abc.getArray(),
-				abc.getNumberOfHashFuncs(),
-				abc.getNonce(),
-                (byte) 2); // BLOOM_UPDATE_P2PUBKEY_ONLY
+		FilterLoadMessage filterLoadMessage = new FilterLoadMessage(filter.getAsArray(),
+		                                                            filter.getNumberOfHashFuncs(),
+		                                                            filter.getNonce(),
+		                                                            (byte) 2); // BLOOM_UPDATE_P2PUBKEY_ONLY
 		
 		assertArrayEquals(exp, filterLoadMessage.getBytes());
 	}

@@ -3,8 +3,7 @@ package bitcoinlistener.util;
 import java.util.BitSet;
 
 /**
- * A bloom filter using BitSet and MurmurHash3
- * 
+ * A bloom filter using java.util.BitSet and MurmurHash3
  */
 public class BloomFilter {
 
@@ -17,8 +16,13 @@ public class BloomFilter {
 	private int nbits;
 	private int sizeInBytes;
 
+	// =============================================================================================
+	// CONSTRUCTORS                                                                                
+	// =============================================================================================
+	
 	public BloomFilter(int numElements, double falsePositiveRate, long nonce) {
-		sizeInBytes = (int) (-1 / (Math.pow(Math.log(2), 2)) * numElements * Math.log(falsePositiveRate));
+		sizeInBytes = (int) (-1 / (Math.pow(Math.log(2), 2)) * numElements * 
+				Math.log(falsePositiveRate));
 		sizeInBytes = Math.max(1, Math.min(sizeInBytes, (int) MAX_FILTER_SIZE * 8) / 8);
 		this.nbits = sizeInBytes * 8;
 		this.bitset = new BitSet();
@@ -28,6 +32,10 @@ public class BloomFilter {
 		this.nonce = nonce;
 	}
 
+	// =============================================================================================
+	// OPERATIONS                                                                                   
+	// =============================================================================================
+	
 	public void insert(byte[] data) {
 		for (int x = 0; x < numberOfHashFuncs; x++) {
 			int bitIndex = HashUtil.murmurHash3(nbits, nonce, x, data);
@@ -44,36 +52,28 @@ public class BloomFilter {
 		}
 		return true;
 	}
-
-	public int getNumberOfHashFuncs() {
-		return numberOfHashFuncs;
+	
+	public byte[] getAsArray() {
+		byte[] result = new byte[sizeInBytes];
+		// the returned byte array can be smaller than sizeInBytes
+		byte[] bitsetArr = bitset.toByteArray();
+		System.arraycopy(bitsetArr, 0, result, 0, bitsetArr.length);
+		return result;
 	}
 
-	public void setNumberOfHashFuncs(int nHashFuncs) {
-		this.numberOfHashFuncs = nHashFuncs;
+	// =============================================================================================
+	/// ACCESSORS (GETTERS AND SETTERS)                                                             
+	// =============================================================================================
+	
+	public int getNumberOfHashFuncs() {
+		return numberOfHashFuncs;
 	}
 
 	public long getNonce() {
 		return nonce;
 	}
 
-	public void setNonce(long nonce) {
-		this.nonce = nonce;
-	}
-
 	public int getNbits() {
 		return nbits;
-	}
-
-	public void setNbits(int nbits) {
-		this.nbits = nbits;
-	}
-	
-	public byte[] getArray() {
-		byte[] result = new byte[sizeInBytes];
-		byte[] bitsetArr = bitset.toByteArray();
-		System.arraycopy(bitsetArr, 0, result, 0, bitsetArr.length);
-		//System.out.println(result.length + " / " + nbits/8);
-		return result;
 	}
 }

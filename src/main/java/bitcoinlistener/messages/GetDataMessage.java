@@ -10,7 +10,7 @@ import bitcoinlistener.datatypes.InvObject;
 
 public class GetDataMessage implements ProtocolMessage {
 
-	private List<InvObject> list = new ArrayList<InvObject>();
+	private List<InvObject> list = new ArrayList<>();
 	
 	@Override
 	public String getCommand() {

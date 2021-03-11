@@ -8,7 +8,6 @@ import org.junit.Test;
 import bitcoinlistener.BitcoinBuffer;
 import bitcoinlistener.datatypes.TxIn;
 import bitcoinlistener.datatypes.TxOut;
-import bitcoinlistener.messages.TxMessage;
 import bitcoinlistener.util.ByteUtil;
 
 public class TxMessageTest {
