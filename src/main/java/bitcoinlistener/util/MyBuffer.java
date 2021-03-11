@@ -3,8 +3,10 @@ package bitcoinlistener.util;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
-import java.util.Arrays;
 
+/**
+ * A byte buffer to deal with signed and unsigned types
+ */
 public class MyBuffer {
 
 	protected ByteBuffer buf;
@@ -93,6 +95,18 @@ public class MyBuffer {
 	public void putInt64(long value) {
 		ensureCapacityFor(Long.BYTES);
 		buf.putLong(value);
+	}
+	
+	
+	public boolean getBoolean() {
+		byte b = this.getByte();
+		return b != (byte) 0;
+	}
+	
+	public void putBoolean(boolean value) {
+		ensureCapacityFor(Byte.BYTES);
+		buf.put(value ? (byte) 1
+		              : (byte) 0);
 	}
 
 	public long getInt64() {

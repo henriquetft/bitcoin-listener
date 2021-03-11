@@ -68,5 +68,27 @@ public class MyBufferTest {
 		
 		assertEquals("Satoshi", str);
 	}
+	
+	
+	@Test
+	public void testBooleanTrue() {
+		BitcoinBuffer b = new BitcoinBuffer(100);
+		boolean exp = true;
+		b.putBoolean(exp);
+		
+		b.setPosition(0);
+		assertEquals(exp, b.getBoolean());
+	}
+	
+	
+	@Test
+	public void testBooleanFalse() {
+		BitcoinBuffer b = new BitcoinBuffer(100);
+		boolean exp = false;
+		b.putBoolean(exp);
+		
+		b.setPosition(0);
+		assertEquals(exp, b.getBoolean());
+	}
 
 }
