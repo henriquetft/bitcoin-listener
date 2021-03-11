@@ -1,3 +1,11 @@
+ /*
+ * Copyright (c) 2021, Henrique Teófilo
+ * All rights reserved.
+ * 
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package bitcoinlistener.messages;
 
 import java.util.Arrays;
@@ -42,10 +50,8 @@ public class TxMessageTest {
 		}
 		
 		
-		BitcoinBuffer mmm = new BitcoinBuffer(1000);
-		tx.serialize(mmm);
-		byte[] rr = mmm.toArrayExactSize();
-		System.out.println("SERIALIZADO: " + ByteUtil.bytesToHex(rr));
+		byte[] rr = tx.getBytes();
+		System.out.println("SERIALIZED: " + ByteUtil.bytesToHex(rr));
 
 	}
 }

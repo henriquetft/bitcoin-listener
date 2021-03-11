@@ -1,3 +1,11 @@
+ /*
+ * Copyright (c) 2021, Henrique Teófilo
+ * All rights reserved.
+ * 
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package bitcoinlistener.messages;
 
 import java.nio.ByteOrder;
@@ -66,6 +74,11 @@ public class VersionMessage implements ProtocolMessage {
 	/// OPERATIONS                                                                                
 	// =============================================================================================
 	
+	@Override
+	public String getCommand() {
+		return "version";
+	}
+
 
 	public byte[] getBytes() {
 		BitcoinBuffer buf = new BitcoinBuffer(10000);
@@ -210,14 +223,8 @@ public class VersionMessage implements ProtocolMessage {
 		this.startHeight = startHeight;
 	}
 
-	@Override
-	public String getCommand() {
-		return "version";
-	}
-
-	
 	// =============================================================================================
-	/// OBJECT OPERATIONS                                                                           
+	// OBJECT OPERATIONS                                                                           
 	// =============================================================================================
 	
 	@Override

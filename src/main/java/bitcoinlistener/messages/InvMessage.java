@@ -1,3 +1,11 @@
+ /*
+ * Copyright (c) 2021, Henrique Teófilo
+ * All rights reserved.
+ * 
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package bitcoinlistener.messages;
 
 import java.nio.ByteOrder;
@@ -16,6 +24,18 @@ public class InvMessage implements ProtocolMessage {
 	
 	private List<InvObject> invObjs = new ArrayList<>();
 	
+	// =============================================================================================
+	// CONSTRUCTORS                                                                                
+	// =============================================================================================
+	
+	public InvMessage() {
+		
+	}
+	
+	// =============================================================================================
+	// OPERATIONS                                                            
+	// =============================================================================================
+	
 	@Override
 	public String getCommand() {
 		return "inv";
@@ -27,14 +47,6 @@ public class InvMessage implements ProtocolMessage {
 	}
 	
 
-	public List<InvObject> getInvObjs() {
-		return invObjs;
-	}
-
-	public void setInvObjs(List<InvObject> invObjs) {
-		this.invObjs = invObjs;
-	}
-
 	@Override
 	public void loadFromBuffer(BitcoinBuffer buf) {
 		ByteOrder o = buf.getEndianness();
@@ -45,6 +57,19 @@ public class InvMessage implements ProtocolMessage {
 		} finally {
 			buf.setEndianness(o);
 		}
+	}
+	
+	
+	// =============================================================================================
+	// ACCESSORS (GETTERS AND SETTERS)                                                              
+	// =============================================================================================
+	
+	public List<InvObject> getInvObjs() {
+		return invObjs;
+	}
+
+	public void setInvObjs(List<InvObject> invObjs) {
+		this.invObjs = invObjs;
 	}
 
 }

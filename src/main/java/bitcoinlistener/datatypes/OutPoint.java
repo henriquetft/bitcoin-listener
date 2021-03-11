@@ -1,3 +1,11 @@
+ /*
+ * Copyright (c) 2021, Henrique Teófilo
+ * All rights reserved.
+ * 
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package bitcoinlistener.datatypes;
 
 import java.nio.ByteOrder;
@@ -9,27 +17,19 @@ import bitcoinlistener.util.ByteUtil;
 public class OutPoint implements ProtocolData {
 
 	private byte[] hash; // char[32]
-	private long index; // UINT32 (4)
+	private long index;  // UINT32 (4)
 
-	public byte[] getHash() {
-		return hash;
+	// =============================================================================================
+	// CONSTRUCTORS                                                                                
+	// =============================================================================================
+
+	public OutPoint() {
+		
 	}
 
-
-	public void setHash(byte[] hash) {
-		this.hash = hash;
-	}
-
-
-	public long getIndex() {
-		return index;
-	}
-
-
-	public void setIndex(long index) {
-		this.index = index;
-	}
-
+	// =============================================================================================
+	// OPERATIONS                                                            
+	// =============================================================================================
 
 	@Override
 	public void loadFromBuffer(BitcoinBuffer buf) {
@@ -57,8 +57,37 @@ public class OutPoint implements ProtocolData {
 		}
 	}
 
+
+	// =============================================================================================
+	// ACCESSORS (GETTERS AND SETTERS)                                                              
+	// =============================================================================================
+	
+	public byte[] getHash() {
+		return hash;
+	}
+
+
+	public void setHash(byte[] hash) {
+		this.hash = hash;
+	}
+
+
+	public long getIndex() {
+		return index;
+	}
+
+
+	public void setIndex(long index) {
+		this.index = index;
+	}
+	
+	// =============================================================================================
+	// OBJECT OPERATIONS                                                                           
+	// =============================================================================================
+	
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + " [hash=" + ByteUtil.byteArrayToStr(hash) + ", index=" + index + "]";
+		return getClass().getSimpleName() + " [hash=" + ByteUtil.byteArrayToStr(hash) +
+				", index=" + index + "]";
 	}
 }

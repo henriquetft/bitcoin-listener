@@ -1,3 +1,11 @@
+ /*
+ * Copyright (c) 2021, Henrique Teófilo
+ * All rights reserved.
+ * 
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package bitcoinlistener.messages;
 
 import java.nio.ByteOrder;
@@ -9,6 +17,19 @@ public class PingMessage implements ProtocolMessage {
 
 	private long nonce;
 	private boolean hasNonce;
+	
+	
+	// =============================================================================================
+	// CONSTRUCTORS                                                                                
+	// =============================================================================================
+	
+	public PingMessage() {
+		
+	}
+	
+	// =============================================================================================
+	// OPERATIONS                                                            
+	// =============================================================================================
 	
 	@Override
 	public String getCommand() {
@@ -34,6 +55,11 @@ public class PingMessage implements ProtocolMessage {
 		}
 	}
 
+	// =============================================================================================
+	// ACCESSORS (GETTERS AND SETTERS)                                                              
+	// =============================================================================================
+	
+	
 	public long getNonce() {
 		return this.nonce;
 	}
@@ -42,6 +68,10 @@ public class PingMessage implements ProtocolMessage {
 		return this.hasNonce;
 	}
 	
+	
+	// =============================================================================================
+	// OBJECT OPERATIONS                                                                           
+	// =============================================================================================
 	
 	@Override
 	public String toString() {

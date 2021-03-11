@@ -1,3 +1,10 @@
+ /*
+ * Copyright (c) 2021, Henrique Teófilo
+ * All rights reserved.
+ * 
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
 
 package bitcoinlistener;
 
@@ -163,7 +170,7 @@ public class BitcoinClient implements BitcoinConnection {
 			if (!this.sock.isConnected()) {
 				fireConnectionEvent(ConnectionEvent.Disconnected);
 			}
-			throw new RuntimeException(e);
+			throw new BitcoinListenerException("Error sending message to socket", e);
 		}
 	}
 	
@@ -195,7 +202,7 @@ public class BitcoinClient implements BitcoinConnection {
 	
 	
 	// =============================================================================================
-	/// ACCESSORS (GETTERS AND SETTERS)                                                             
+	// ACCESSORS (GETTERS AND SETTERS)                                                             
 	// =============================================================================================
 	
 	@Override
@@ -378,15 +385,20 @@ public class BitcoinClient implements BitcoinConnection {
 		}
 	}
 	
-	private boolean isBloomFilteringSupported() {
-		return ((ServiceIdentifiers.NODE_BLOOM & services) == ServiceIdentifiers.NODE_BLOOM);
-	}
+	// =============================================================================================
 	
 	private void fireConnectionEvent(ConnectionEvent event) {
 		for (ConnectionListener connListener : connListeners) {
 			connListener.event(event, this);
 		}
 	}
+	
+	// =============================================================================================
+	
+	private boolean isBloomFilteringSupported() {
+		return ((ServiceIdentifiers.NODE_BLOOM & services) == ServiceIdentifiers.NODE_BLOOM);
+	}
+	
 
 	private void sendBloomFilter(List<String> addressList) {
 

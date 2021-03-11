@@ -1,3 +1,11 @@
+ /*
+ * Copyright (c) 2021, Henrique Teófilo
+ * All rights reserved.
+ * 
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package bitcoinlistener.util;
 
 import java.util.BitSet;
@@ -10,6 +18,8 @@ public class BloomFilter {
 	private static final long MAX_FILTER_SIZE = 36000;
 	private static final int MAX_NUM_HASH_FUNCS = 50;
 
+	// =============================================================================================
+	
 	private BitSet bitset;
 	private int numberOfHashFuncs;
 	private long nonce;

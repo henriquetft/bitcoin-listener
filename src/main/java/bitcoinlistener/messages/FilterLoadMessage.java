@@ -1,3 +1,11 @@
+ /*
+ * Copyright (c) 2021, Henrique Teófilo
+ * All rights reserved.
+ * 
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package bitcoinlistener.messages;
 
 import java.nio.ByteOrder;
@@ -5,19 +13,37 @@ import java.nio.ByteOrder;
 import bitcoinlistener.BitcoinBuffer;
 import bitcoinlistener.ProtocolMessage;
 
+/**
+ * Message to set a bloom filter.
+ * 
+ * Upon receiving a filterload command, the remote peer will immediately
+ * restrict the broadcast transactions it announces (in inv packets) to
+ * transactions matching the filter.
+ */
 public class FilterLoadMessage implements ProtocolMessage {
 
-
-//	 ? 	filter 	uint8_t[] 	The filter itself is simply a bit field of arbitrary byte-aligned size. The maximum size is 36,000 bytes.
-//			 4 	nHashFuncs 	uint32_t 	The number of hash functions to use in this filter. The maximum value allowed in this field is 50.
-//			 4 	nTweak 	uint32_t 	A random value to add to the seed value in the hash function used by the bloom filter.
-//			 1 	nFlags 	uint8_t 	A set of flags that control how matched items are added to the filter. 
+ 	 	
+	/**
+	 * The filter itself is simply a bit field of arbitrary byte-aligned size. The
+	 * maximum size is 36,000 bytes
+	 */
+	private byte[] filter;                  // uint8_t[]
+	/**
+	 * The number of hash functions to use in this filter. The maximum value allowed
+	 * in this field is 50
+	 */
+	private long numHashFuncs;              // uint32_t (4)
+	/** A random value to add to the seed value in the hash function used by the bloom filter. */
+	private long tweak;                     // uint32_t (4)
 	
-	private byte[] filter;   // uint8_t[]
-	private long numHashFuncs; // uint32_t (4)
-	private long tweak;     // uint32_t (4)
-	private byte flags;     // uint8_t (1)
+	/** A set of flags that control how matched items are added to the filter. */
+	private byte flags;                     // uint8_t (1)
 
+	
+	// =============================================================================================
+	// CONSTRUCTORS                                                                                
+	// =============================================================================================
+	
 	public FilterLoadMessage(byte[] filter, long numHashFuncs, long tweak, byte flags) {
 		super();
 		this.filter = filter;
@@ -29,6 +55,11 @@ public class FilterLoadMessage implements ProtocolMessage {
 	public FilterLoadMessage() {
 		
 	}
+	
+	
+	// =============================================================================================
+	// OPERATIONS                                                            
+	// =============================================================================================
 	
 	@Override
 	public String getCommand() {
@@ -64,6 +95,10 @@ public class FilterLoadMessage implements ProtocolMessage {
 		}
 	}
 
+	// =============================================================================================
+	// ACCESSORS (GETTERS AND SETTERS)                                                              
+	// =============================================================================================
+	
 	public byte[] getFilter() {
 		return filter;
 	}

@@ -1,3 +1,11 @@
+ /*
+ * Copyright (c) 2021, Henrique Teófilo
+ * All rights reserved.
+ * 
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package bitcoinlistener.datatypes;
 
 import java.math.BigInteger;
@@ -12,22 +20,19 @@ public class TxOut implements ProtocolData {
 	private long value;      // int64_t
 	private byte[] pkScript; // var_int + uchar[]
 
-	public byte[] getPkScript() {
-		return pkScript;
+	
+	// =============================================================================================
+	// CONSTRUCTORS                                                                                
+	// =============================================================================================
+
+	public TxOut() {
+		
 	}
 
-	public void setPkScript(byte[] pkScript) {
-		this.pkScript = pkScript;
-	}
-
-	public long getValue() {
-		return value;
-	}
-
-	public void setValue(long value) {
-		this.value = value;
-	}
-
+	// =============================================================================================
+	// OPERATIONS                                                            
+	// =============================================================================================
+	
 	@Override
 	public void loadFromBuffer(BitcoinBuffer buf) {
 		ByteOrder o = buf.getEndianness();
@@ -55,7 +60,32 @@ public class TxOut implements ProtocolData {
 			buf.setEndianness(old);
 		}
 	}
+	
+	// =============================================================================================
+	// ACCESSORS (GETTERS AND SETTERS)                                                              
+	// =============================================================================================
+	
+	public byte[] getPkScript() {
+		return pkScript;
+	}
 
+	public void setPkScript(byte[] pkScript) {
+		this.pkScript = pkScript;
+	}
+
+	public long getValue() {
+		return value;
+	}
+
+	public void setValue(long value) {
+		this.value = value;
+	}
+
+
+	// =============================================================================================
+	// OBJECT OPERATIONS                                                                           
+	// =============================================================================================
+	
 	@Override
 	public String toString() {
 		return getClass().getSimpleName() + " [value=" + value + ", pkScript=" +

@@ -1,3 +1,11 @@
+ /*
+ * Copyright (c) 2021, Henrique Teófilo
+ * All rights reserved.
+ * 
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package bitcoinlistener.util;
 
 import java.math.BigInteger;
@@ -10,6 +18,10 @@ import java.nio.ByteOrder;
 public class MyBuffer {
 
 	protected ByteBuffer buf;
+	
+	// =============================================================================================
+	// CONSTRUCTORS                                                                                
+	// =============================================================================================
 
 	public MyBuffer(int length) {
 		this.buf = ByteBuffer.allocate(length);
@@ -19,6 +31,10 @@ public class MyBuffer {
 		this.buf = ByteBuffer.wrap(array);
 	}
 
+	// =============================================================================================
+	// OPERATIONS                                                                                   
+	// =============================================================================================
+	
 	public void clear() {
 		buf.clear();
 	}
@@ -171,6 +187,11 @@ public class MyBuffer {
 		return str;
 	}
 
+	
+	// =============================================================================================
+	// AUXILIARY METHODS
+	// =============================================================================================
+	
 	private static int findByte(byte[] array, byte b) {
 		for (int x = 0; x < array.length; x++) {
 			if (array[x] == b) {
@@ -180,7 +201,7 @@ public class MyBuffer {
 		return -1;
 	}
 
-	public static void reverse(byte[] array) {
+	private static void reverse(byte[] array) {
 		for (int x = 0; x < array.length / 2; x++) {
 			byte aux = array[x];
 			array[x] = array[array.length - x - 1];
@@ -201,5 +222,4 @@ public class MyBuffer {
 			this.buf.order(oldByteOrder);
 		}
 	}
-
 }

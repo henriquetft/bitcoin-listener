@@ -1,3 +1,11 @@
+ /*
+ * Copyright (c) 2021, Henrique Teófilo
+ * All rights reserved.
+ * 
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package bitcoinlistener.datatypes;
 
 import java.nio.ByteOrder;
@@ -12,29 +20,19 @@ public class TxIn implements ProtocolData {
 	private byte[] signatureScript;  // (var_int + uchar[])
 	private long sequence;           // uint32_t
 	
-	public OutPoint getPreviousOutput() {
-		return previousOutput;
-	}
+	
+	// =============================================================================================
+	// CONSTRUCTORS                                                                                
+	// =============================================================================================
 
-	public byte[] getSignatureScript() {
-		return signatureScript;
+	public TxIn() {
+		
 	}
-
-	public long getSequence() {
-		return sequence;
-	}
-
-	public void setPreviousOutput(OutPoint previousOutput) {
-		this.previousOutput = previousOutput;
-	}
-
-	public void setSignatureScript(byte[] signatureScript) {
-		this.signatureScript = signatureScript;
-	}
-
-	public void setSequence(long sequence) {
-		this.sequence = sequence;
-	}
+	
+	// =============================================================================================
+	// OPERATIONS                                                            
+	// =============================================================================================
+	
 	
 	@Override
 	public void loadFromBuffer(BitcoinBuffer buf) {
@@ -66,7 +64,40 @@ public class TxIn implements ProtocolData {
 			buf.setEndianness(old);
 		}
 	}
+	
+	
+	// =============================================================================================
+	// ACCESSORS (GETTERS AND SETTERS)                                                              
+	// =============================================================================================
+	
+	public OutPoint getPreviousOutput() {
+		return previousOutput;
+	}
 
+	public byte[] getSignatureScript() {
+		return signatureScript;
+	}
+
+	public long getSequence() {
+		return sequence;
+	}
+
+	public void setPreviousOutput(OutPoint previousOutput) {
+		this.previousOutput = previousOutput;
+	}
+
+	public void setSignatureScript(byte[] signatureScript) {
+		this.signatureScript = signatureScript;
+	}
+
+	public void setSequence(long sequence) {
+		this.sequence = sequence;
+	}
+
+	// =============================================================================================
+	// OBJECT OPERATIONS                                                                           
+	// =============================================================================================
+	
 	@Override
 	public String toString() {
 		return "TxIn [previousOutput=" + previousOutput + ", signatureScript="

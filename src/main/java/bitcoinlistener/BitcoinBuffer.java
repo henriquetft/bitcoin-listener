@@ -1,3 +1,11 @@
+ /*
+ * Copyright (c) 2021, Henrique Teófilo
+ * All rights reserved.
+ * 
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package bitcoinlistener;
 
 import java.math.BigInteger;
@@ -15,6 +23,11 @@ import bitcoinlistener.util.MyBuffer;
  */
 public class BitcoinBuffer extends MyBuffer {
 
+	
+	// =============================================================================================
+	// CONSTRUCTORS                                                                                
+	// =============================================================================================
+	
 	public BitcoinBuffer(int initialCapacity) {
 		super(initialCapacity);
 	}
@@ -23,6 +36,9 @@ public class BitcoinBuffer extends MyBuffer {
 		super(array);
 	}
 
+	// =============================================================================================
+	// OPERATIONS
+	// =============================================================================================
 	
 	public void putData(ProtocolData data) {
 		data.writeToBuffer(this);
@@ -77,8 +93,11 @@ public class BitcoinBuffer extends MyBuffer {
 	}
 	
 	
+	// =============================================================================================
+	// AUXILIARY METHODS
+	// =============================================================================================
 	
-	public static BigInteger readVarInt(ByteBuffer buf) {
+	private static BigInteger readVarInt(ByteBuffer buf) {
 		ByteOrder old = buf.order();
 		
 		buf.order(ByteOrder.LITTLE_ENDIAN);
@@ -114,7 +133,7 @@ public class BitcoinBuffer extends MyBuffer {
 	}
 
 	
-	public static byte[] getVarInt(BigInteger v) {
+	private static byte[] getVarInt(BigInteger v) {
 		if (v.compareTo(BigInteger.valueOf(0xFD)) < 0) {
 			return new byte[] { (byte) v.longValue() };
 			

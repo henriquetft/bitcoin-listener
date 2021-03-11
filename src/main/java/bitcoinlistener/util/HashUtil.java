@@ -1,9 +1,18 @@
+ /*
+ * Copyright (c) 2021, Henrique Teófilo
+ * All rights reserved.
+ * 
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package bitcoinlistener.util;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class HashUtil {
+	
 	public static byte[] sha256(byte[] arr) {
 		try {
 			MessageDigest digest = MessageDigest.getInstance("SHA-256");

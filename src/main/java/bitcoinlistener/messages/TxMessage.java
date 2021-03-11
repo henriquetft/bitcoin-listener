@@ -1,3 +1,11 @@
+ /*
+ * Copyright (c) 2021, Henrique Teófilo
+ * All rights reserved.
+ * 
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package bitcoinlistener.messages;
 
 import java.nio.ByteOrder;
@@ -17,9 +25,22 @@ public class TxMessage implements ProtocolMessage {
 	private List<TxIn> txInList;
 	private List<TxOut> txOutList;
 	private long lockTime;
-	
 	private byte[] rawData;
+	
+	
+	// =============================================================================================
+	// CONSTRUCTORS                                                                                
+	// =============================================================================================
+	
+	public TxMessage() {
+		
+	}
 
+	// =============================================================================================
+	// OPERATIONS                                                                                   
+	// =============================================================================================
+	
+	
 	@Override
 	public void loadFromBuffer(BitcoinBuffer buf) {
 		ByteOrder old = buf.getEndianness();
@@ -42,18 +63,9 @@ public class TxMessage implements ProtocolMessage {
 		}
 	}
 
-	public String getHash() {
-		byte[] data = new byte[rawData.length];
-		System.arraycopy(rawData, 0, data, 0, data.length);
-
-		data = HashUtil.sha256(HashUtil.sha256(data));
-		ByteUtil.invertArray(data);
-		return ByteUtil.bytesToHex(data);
-	}
-
-	// @Override
-	public void serialize(BitcoinBuffer buf) {
-		// FIXME getbytes
+	@Override
+	public byte[] getBytes() {
+		BitcoinBuffer buf = new BitcoinBuffer(100);
 		ByteOrder old = buf.getEndianness();
 		try {
 			buf.setEndianness(ByteOrder.LITTLE_ENDIAN);
@@ -61,6 +73,9 @@ public class TxMessage implements ProtocolMessage {
 			buf.putVector(txInList);
 			buf.putVector(txOutList);
 			buf.putUint32(lockTime);
+			
+			byte[] arr = buf.toArrayExactSize();
+			return arr;
 		} finally {
 			buf.setEndianness(old);
 		}
@@ -71,10 +86,9 @@ public class TxMessage implements ProtocolMessage {
 		return "tx";
 	}
 
-	@Override
-	public byte[] getBytes() {
-		throw new RuntimeException("not implemented");
-	}
+	// =============================================================================================
+	/// ACCESSORS (GETTERS AND SETTERS)                                                             
+	// =============================================================================================
 
 	public List<TxIn> getTxInList() {
 		return txInList;
@@ -84,6 +98,20 @@ public class TxMessage implements ProtocolMessage {
 		return txOutList;
 	}
 
+	public String getHash() {
+		byte[] data = new byte[rawData.length];
+		System.arraycopy(rawData, 0, data, 0, data.length);
+
+		data = HashUtil.sha256(HashUtil.sha256(data));
+		ByteUtil.invertArray(data);
+		return ByteUtil.bytesToHex(data);
+	}
+	
+	// =============================================================================================
+	// OBJECT OPERATIONS                                                                           
+	// =============================================================================================
+	
+	
 	@Override
 	public String toString() {
 		return getClass().getSimpleName() + " [hash=" + getHash() + ", version=" + version +

@@ -1,3 +1,11 @@
+ /*
+ * Copyright (c) 2021, Henrique Teófilo
+ * All rights reserved.
+ * 
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package bitcoinlistener.datatypes;
 
 import java.net.InetAddress;
@@ -8,22 +16,20 @@ import bitcoinlistener.BitcoinBuffer;
 import bitcoinlistener.ProtocolData;
 
 public class NetAddress implements ProtocolData {
-	/*
-Field Size     Description      Data type       Comments
-4                time            uint32         the Time (version >= 31402). Not present in version message.
-8                services        uint64_t       same service(s) listed in version
-16               IPv6/4          char[16]       IPv6 address. Network byte order. The original client only supported IPv4 and only read the last 4 bytes to get the IPv4 address. However, the IPv4 address is written into the message as a 16 byte IPv4-mapped IPv6 address (12 bytes 00 00 00 00 00 00 00 00 00 00 FF FF, followed by the 4 bytes of the IPv4 address).
-2                port            uint16_t        port number, network byte order
-	 */
-	private long services = 1;
-	// (12 bytes 00 00 00 00 00 00 00 00 00 00 FF FF, followed by the 4 bytes of the
-	// IPv4 address).
+
+	// (12 bytes 00 00 00 00 00 00 00 00 00 00 FF FF, followed by the 4 bytes of the IPv4 address).
 	private byte[] ipv6 = new byte[] { (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
 			(byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00, (byte) 0x00,
 			(byte) 0xFF, (byte) 0xFF };
+
+	private long services = 1;
 	private String ip = "0.0.0.0";
 	private int port = 0;
 	
+	
+	// =============================================================================================
+	// CONSTRUCTORS                                                                                
+	// =============================================================================================
 
 	public NetAddress() {
 
@@ -34,6 +40,9 @@ Field Size     Description      Data type       Comments
 		this.port = port;
 	}
 
+	// =============================================================================================
+	// OPERATIONS                                                                                
+	// =============================================================================================
 
 	@Override
 	public void loadFromBuffer(BitcoinBuffer buf) {
@@ -81,6 +90,10 @@ Field Size     Description      Data type       Comments
 		
 	}
 
+	
+	// =============================================================================================
+	// OBJECT OPERATIONS                                                                           
+	// =============================================================================================
 	
 	@Override
 	public String toString() {

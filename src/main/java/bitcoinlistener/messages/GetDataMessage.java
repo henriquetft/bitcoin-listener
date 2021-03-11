@@ -1,3 +1,11 @@
+ /*
+ * Copyright (c) 2021, Henrique Teófilo
+ * All rights reserved.
+ * 
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package bitcoinlistener.messages;
 
 import java.nio.ByteOrder;
@@ -8,9 +16,25 @@ import bitcoinlistener.BitcoinBuffer;
 import bitcoinlistener.ProtocolMessage;
 import bitcoinlistener.datatypes.InvObject;
 
+/**
+ * Getdata is used in response to inv, to retrieve the content of a specific
+ * object. It can be used to retrieve transactions (in mempool)
+ */
 public class GetDataMessage implements ProtocolMessage {
 
 	private List<InvObject> list = new ArrayList<>();
+	
+	// =============================================================================================
+	// CONSTRUCTORS                                                                                
+	// =============================================================================================
+	
+	public GetDataMessage() {
+		
+	}
+	
+	// =============================================================================================
+	// OPERATIONS                                                            
+	// =============================================================================================
 	
 	@Override
 	public String getCommand() {
@@ -40,6 +64,10 @@ public class GetDataMessage implements ProtocolMessage {
 		return !list.isEmpty();
 	}
 
+
+	// =============================================================================================
+	// ACCESSORS (GETTERS AND SETTERS)                                                              
+	// =============================================================================================
 	
 	public List<InvObject> getList() {
 		return list;

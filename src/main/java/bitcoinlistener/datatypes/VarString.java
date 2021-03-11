@@ -1,3 +1,11 @@
+ /*
+ * Copyright (c) 2021, Henrique Teófilo
+ * All rights reserved.
+ * 
+ * This source code is licensed under the BSD-style license found in the
+ * LICENSE file in the root directory of this source tree.
+ */
+
 package bitcoinlistener.datatypes;
 
 import java.nio.ByteOrder;
@@ -9,6 +17,10 @@ public class VarString implements ProtocolData {
 
 	private String string;
 
+	// =============================================================================================
+	// CONSTRUCTORS                                                                                
+	// =============================================================================================
+	
 	public VarString() {
 	}
 	
@@ -16,13 +28,10 @@ public class VarString implements ProtocolData {
 		this.string = s;
 	}
 
-	public String getString() {
-		return string;
-	}
-
-	public void setString(String string) {
-		this.string = string;
-	}
+	
+	// =============================================================================================
+	// OPERATIONS                                                            
+	// =============================================================================================
 	
 	@Override
 	public void loadFromBuffer(BitcoinBuffer buf) {
@@ -50,6 +59,24 @@ public class VarString implements ProtocolData {
 			buf.setEndianness(o);
 		}
 	}
+	
+	
+	// =============================================================================================
+	// ACCESSORS (GETTERS AND SETTERS)                                                              
+	// =============================================================================================
+	
+	public String getString() {
+		return string;
+	}
+
+	public void setString(String string) {
+		this.string = string;
+	}
+	
+	
+	// =============================================================================================
+	// OBJECT OPERATIONS                                                                           
+	// =============================================================================================
 	
 	@Override
 	public String toString() {
