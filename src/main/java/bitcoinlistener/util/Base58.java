@@ -3,6 +3,8 @@ package bitcoinlistener.util;
 /*
  * Copyright 2011 Google Inc.
  * Copyright 2018 Andreas Schildbach
+ * 
+ * Modifications Copyright 2021 Henrique Teófilo
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +17,15 @@ package bitcoinlistener.util;
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ */
+
+
+/*
+ * This code was borrowed from bitcoinj project
+ * 
+ * The original code was changed to remove some dependencies
+ * in order to run outside bitcoinj.
+ *  
  */
 
 import java.math.BigInteger;
