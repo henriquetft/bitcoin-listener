@@ -16,9 +16,13 @@ import bitcoinlistener.util.ByteUtil;
 
 public class OutPoint implements ProtocolData {
 
+	/** The hash of the referenced transaction. */
 	private byte[] hash; // char[32]
+	
+	/** The index of the specific output in the transaction. The first output is 0, etc. */
 	private long index;  // UINT32 (4)
 
+	
 	// =============================================================================================
 	// CONSTRUCTORS                                                                                
 	// =============================================================================================

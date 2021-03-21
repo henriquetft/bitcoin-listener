@@ -35,20 +35,12 @@ public class BitcoinListener {
 	public static void main(String[] args) throws Exception {
 		
 		BitcoinClient c = new BitcoinClient(IP, PORT, NETWORK);
+		List<String> filtered = new ArrayList<>();
 		
-		c.addConnectionListener(new ConnectionListener() {
-			@Override
-			public void event(ConnectionEvent event, BitcoinConnection conn) {
+//		filtered.add("muBB8CVDwX3ujEZ9LgahA3ebx38buaJp1Y");
+//		filtered.add("tb1qn7xylvtxa6jw9pqc729eqac274sygltcaay8wp");
+//		c.setFilterList(filtered);
 				
-				// After connection is open and both peers have exchanged their version
-				if (event == ConnectionEvent.Verack) {
-					List<String> list = new ArrayList<>();
-					list.add("muBB8CVDwX3ujEZ9LgahA3ebx38buaJp1Y");
-					conn.addFilter(list);
-				}
-			}
-		});
-		
 		// Setting up an observer to recieve new transactions
 		c.addTransactionListener(new TransactionListener() {
 			@Override
@@ -57,6 +49,21 @@ public class BitcoinListener {
 			}
 		});
 		
+		c.addConnectionListener(new ConnectionListener() {
+			@Override
+			public void event(ConnectionEvent event, BitcoinConnection conn) {
+				if (event == ConnectionEvent.Disconnected) {
+					System.out.println("Disconnected");
+				}
+			}
+		});
+		
+		
 		c.connect();
+		Thread.sleep(1000);
+		System.out.println("Press [enter] to exit");
+		System.in.read();
+		c.disconnect();
+		
 	}
 }

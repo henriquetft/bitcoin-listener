@@ -57,7 +57,7 @@ public class VersionMessage implements ProtocolMessage {
 	}
 
 	
-	public VersionMessage(int version, String subVer) {
+	public VersionMessage(int version, String subVer, boolean relay) {
 		this.version = version;
 		this.services = 0;
 		this.time = System.currentTimeMillis() / 1000L; // unix timestamp
@@ -66,7 +66,7 @@ public class VersionMessage implements ProtocolMessage {
 		this.nonce = ByteUtil.getRandomNonce();
 		this.subVer = subVer;
 		this.startHeight = -1;
-		this.relay = true;
+		this.relay = relay;
 	}
 
 	

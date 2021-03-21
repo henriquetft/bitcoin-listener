@@ -18,7 +18,7 @@ public interface ConnectionListener {
 		Connected,
 		
 		/** Socket disconnected */
-		Disconnected, // socket disconnected
+		Disconnected,
 		
 		/**
 		 * Verack messaged received. Indicates that this connection is ready to send/recieve
@@ -31,7 +31,7 @@ public interface ConnectionListener {
 	/**
 	 * Invoked when an event occurs.
 	 * 
-	 * @param event Event
+	 * @param event Event type of event
 	 * @param conn Peer connection
 	 */
 	void event(ConnectionEvent event, BitcoinConnection conn);
