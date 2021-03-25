@@ -365,6 +365,7 @@ public class BitcoinClient implements BitcoinConnection {
 				pos += 4;
 
 				// CHECKSUM (4)
+				// FIXME verify checksum
 				pos += 4;
 
 				if (pos + payloadSize > arr.length) {
