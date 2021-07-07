@@ -8,10 +8,10 @@
 
 package bitcoinlistener;
 
-import java.util.ArrayList;
-import java.util.List;
+ import bitcoinlistener.messages.TxMessage;
 
-import bitcoinlistener.messages.TxMessage;
+ import java.util.ArrayList;
+ import java.util.List;
 
 /**
  * Sample Usage.
@@ -48,6 +48,12 @@ public class BitcoinListener {
 				System.out.println("New Trasaction: " + tx);
 			}
 		});
+
+		c.addBlockListener((block, conn) -> {
+			System.out.println("New Block: " + block);
+		});
+
+
 		
 		c.addConnectionListener(new ConnectionListener() {
 			@Override

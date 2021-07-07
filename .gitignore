@@ -3,5 +3,7 @@ target/
 .classpath
 .project
 .settings/
+.idea/
+bitcoin-listener.iml
 DONTCOMMIT.txt
 

@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.ReentrantLock;
 
+import bitcoinlistener.messages.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,13 +33,6 @@ import bitcoinlistener.ConnectionListener.ConnectionEvent;
 import bitcoinlistener.datatypes.InvObject;
 import bitcoinlistener.datatypes.TxIn;
 import bitcoinlistener.datatypes.TxOut;
-import bitcoinlistener.messages.FilterLoadMessage;
-import bitcoinlistener.messages.GetDataMessage;
-import bitcoinlistener.messages.InvMessage;
-import bitcoinlistener.messages.PingMessage;
-import bitcoinlistener.messages.TxMessage;
-import bitcoinlistener.messages.Verack;
-import bitcoinlistener.messages.VersionMessage;
 import bitcoinlistener.util.AddressUtil;
 import bitcoinlistener.util.BloomFilter;
 import bitcoinlistener.util.ByteUtil;
@@ -63,6 +57,7 @@ public class BitcoinClient implements BitcoinConnection {
 		protocolMessages.put("ping", PingMessage.class);
 		protocolMessages.put("tx", TxMessage.class);
 		protocolMessages.put("verack", Verack.class);
+		protocolMessages.put("block", BlockMessage.class);
 	}
 
 	// =============================================================================================
@@ -75,6 +70,7 @@ public class BitcoinClient implements BitcoinConnection {
 	private String ip;
 	private int port;
 	private List<TransactionListener> txListeners = new CopyOnWriteArrayList<>();
+	private List<BlockListener> blockListeners = new CopyOnWriteArrayList<>();
 	private List<ConnectionListener> connListeners = new CopyOnWriteArrayList<>();
 	private BloomFilter filter;
 	private List<String> filtered = new ArrayList<>();
@@ -211,6 +207,10 @@ public class BitcoinClient implements BitcoinConnection {
 	
 	public void addTransactionListener(TransactionListener txListener) {
 		txListeners.add(txListener);
+	}
+
+	public void addBlockListener(BlockListener blockListener) {
+		blockListeners.add(blockListener);
 	}
 	
 	public void addConnectionListener(ConnectionListener connListener) {
@@ -452,6 +452,15 @@ public class BitcoinClient implements BitcoinConnection {
 					txListener.onTransaction(tx, this);
 				} catch (Throwable t) {
 					log.warn("Error calling transaction listener", t);
+				}
+			}
+		} else if (m instanceof BlockMessage) {
+			BlockMessage block = (BlockMessage) m;
+			for (BlockListener blockListener : blockListeners) {
+				try {
+					blockListener.onBlock(block, this);
+				} catch (Throwable t) {
+					log.warn("Error calling block listener", t);
 				}
 			}
 		}
