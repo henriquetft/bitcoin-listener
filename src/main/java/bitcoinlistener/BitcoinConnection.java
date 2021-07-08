@@ -1,4 +1,4 @@
- /*
+/*
  * Copyright (c) 2021, Henrique Teófilo
  * All rights reserved.
  * 
@@ -47,8 +47,17 @@ public interface BitcoinConnection {
 	 * @param address collection containing addresses to be added to the bloom filter
 	 */
 	void setFilterList(Collection<String> address);
-	
+
+	/**
+	 * Sets up a filter config
+	 * @param filterConfig
+	 */
 	void setFilterConfig(FilterConfig filterConfig);
+
+	/**
+	 * Returns the current filter config
+	 * @return {@link FilterConfig}
+	 */
 	FilterConfig getFilterConfig();
 	
 	/** Returns the services supported by the transmitting node encoded as a bitfield. */
