@@ -132,6 +132,7 @@ public class BitcoinClient implements BitcoinConnection {
 			} finally {
 				try { out.close(); } catch (IOException e) { }
 				try { this.sock.close(); } catch (IOException e1) { }
+				log.info("Disconnected from {}:{}", ip, port);
 				fireConnectionEvent(ConnectionEvent.Disconnected);
 			}
 		}).start();
@@ -433,6 +434,7 @@ public class BitcoinClient implements BitcoinConnection {
 			PingMessage ping = (PingMessage) m;
 			if (ping.hasNonce()) {
 				// send pong?
+				sendMessage(new PongMessage(ping.getNonce()));
 			}
 			
 		} else if (m instanceof TxMessage) {
@@ -456,6 +458,10 @@ public class BitcoinClient implements BitcoinConnection {
 			}
 		} else if (m instanceof BlockMessage) {
 			BlockMessage block = (BlockMessage) m;
+			log.info("---------------------------------------------------------------------------");
+			log.info("Block received {}", block.getHash());
+			log.info(block.toString());
+			log.info("---------------------------------------------------------------------------");
 			for (BlockListener blockListener : blockListeners) {
 				try {
 					blockListener.onBlock(block, this);
