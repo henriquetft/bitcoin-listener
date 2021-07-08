@@ -22,10 +22,11 @@ package bitcoinlistener;
 public class BitcoinListener {
 
 	// Setting up logging system
-    static {
-        String path = BitcoinClient.class.getClassLoader().getResource("logging.properties").getFile();
-        System.setProperty("java.util.logging.config.file", path);
-    }
+	static {
+		String path = BitcoinClient.class.getClassLoader().getResource(
+				"logging.properties").getFile();
+		System.setProperty("java.util.logging.config.file", path);
+	}
     
     private static final String IP = "localhost";
     private static final int PORT = 8333;
@@ -49,12 +50,12 @@ public class BitcoinListener {
 			}
 		});
 
+		// Setting up an observer to recieve new blocks
 		c.addBlockListener((block, conn) -> {
 			System.out.println("New Block: " + block);
 		});
 
-
-		
+		// Setting up an observer to recieve connection events
 		c.addConnectionListener(new ConnectionListener() {
 			@Override
 			public void event(ConnectionEvent event, BitcoinConnection conn) {
