@@ -58,7 +58,12 @@ public interface BitcoinConnection {
 	 * @return {@link FilterConfig}
 	 */
 	FilterConfig getFilterConfig();
-	
-	/** Returns the services supported by the transmitting node encoded as a bitfield. */
+
+	/**
+	 * Returns the services supported by the peer (received from version Msg).
+	 *
+	 * @return services encoded as a bitfield
+	 * @see {@link bitcoinlistener.ServiceIdentifiers}
+	 */
 	long getServices();
 }
