@@ -16,6 +16,12 @@ import bitcoinlistener.util.HashUtil;
 import java.nio.ByteOrder;
 import java.util.List;
 
+/**
+ * This object describes a bitcoin block.
+ * <p>
+ * The block message is sent in response to a getdata message which requests transaction information
+ * from a block hash.
+ */
 public class BlockMessage implements ProtocolMessage {
 
 	/**
@@ -73,7 +79,6 @@ public class BlockMessage implements ProtocolMessage {
 	// OPERATIONS
 	// =============================================================================================
 
-
 	@Override
 	public void loadFromBuffer(BitcoinBuffer buf) {
 		ByteOrder o = buf.getEndianness();
@@ -104,7 +109,6 @@ public class BlockMessage implements ProtocolMessage {
 	public byte[] getBytes() {
 		throw new RuntimeException("not implemented");
 	}
-
 
 	@Override
 	public String getCommand() {
@@ -191,7 +195,6 @@ public class BlockMessage implements ProtocolMessage {
 	// =============================================================================================
 	// OBJECT OPERATIONS
 	// =============================================================================================
-
 
 	@Override
 	public String toString() {

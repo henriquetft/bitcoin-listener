@@ -1,4 +1,4 @@
- /*
+/*
  * Copyright (c) 2021, Henrique Teófilo
  * All rights reserved.
  * 
@@ -23,7 +23,6 @@ import bitcoinlistener.util.MyBuffer;
  */
 public class BitcoinBuffer extends MyBuffer {
 
-	
 	// =============================================================================================
 	// CONSTRUCTORS                                                                                
 	// =============================================================================================
@@ -43,7 +42,6 @@ public class BitcoinBuffer extends MyBuffer {
 	public void putData(ProtocolData data) {
 		data.writeToBuffer(this);
 	}
-	
 	
 	public void putVarInt(BigInteger v) {
 		byte[] varIntBytes = BitcoinBuffer.getVarInt(v);
@@ -91,8 +89,7 @@ public class BitcoinBuffer extends MyBuffer {
 			throw new RuntimeException(e);
 		}
 	}
-	
-	
+
 	// =============================================================================================
 	// AUXILIARY METHODS
 	// =============================================================================================
@@ -108,22 +105,26 @@ public class BitcoinBuffer extends MyBuffer {
 		
 		if (vli < 0xFD) {
 			return BigInteger.valueOf(vli);
+
 		} else if (vli == 0xFD) {
 			// 0xFD followed by the length as uint16_t
 			char len = buf.getChar();
 			return BigInteger.valueOf((long) len);
+
 		} else if (vli == 0xFE) {
 			// 0xFE followed by the length as uint32_t
 			byte[] arr = new byte[4];
 			buf.get(arr);
 			ByteUtil.invertArray(arr); // BigInteger requires big endian
 			result = new BigInteger(arr);
+
 		} else if (vli == 0xFF) {
 			// 0xFF followed by the length as uint64_t
 			byte[] arr = new byte[8];
 			buf.get(arr);
 			ByteUtil.invertArray(arr); // BigInteger requires big endian
 			result = new BigInteger(arr);
+
 		} else {
 			throw new RuntimeException();
 		}
@@ -131,7 +132,6 @@ public class BitcoinBuffer extends MyBuffer {
 		buf.order(old);
 		return result;
 	}
-
 	
 	private static byte[] getVarInt(BigInteger v) {
 		if (v.compareTo(BigInteger.valueOf(0xFD)) < 0) {
@@ -140,25 +140,22 @@ public class BitcoinBuffer extends MyBuffer {
 		} else if (v.compareTo(BigInteger.valueOf(0xFFFF)) <= 0) {
 			ByteBuffer buf = ByteBuffer.allocate(Character.BYTES + 1);
 			buf.order(ByteOrder.LITTLE_ENDIAN);
-			
 			buf.put((byte) 0xFD);
 			buf.putChar((char) v.longValue());
 			return buf.array();
-			
-			
+
 		} else if (v.compareTo(BigInteger.valueOf(0xFFFFFFFFL)) <= 0) {
 			ByteBuffer buf = ByteBuffer.allocate(5);
 			buf.order(ByteOrder.LITTLE_ENDIAN);
 			buf.put((byte) 0xFE);
 			buf.put(ByteUtil.slice(v.toByteArray(), 1, 4));
-			
 			return buf.array();
+
 		} else {
 			ByteBuffer buf = ByteBuffer.allocate(9);
 			buf.order(ByteOrder.LITTLE_ENDIAN);
 			buf.put((byte) 0xFF);
 			buf.put(ByteUtil.slice(v.toByteArray(), 1, 8));
-			
 			return buf.array();
 		}
 	}

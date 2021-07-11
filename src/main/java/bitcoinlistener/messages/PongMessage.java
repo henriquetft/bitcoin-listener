@@ -21,7 +21,6 @@ public class PongMessage implements ProtocolMessage {
 	/** nonce from ping */
 	private long nonce; // uint64_t
 
-
 	// =============================================================================================
 	// CONSTRUCTORS
 	// =============================================================================================
@@ -61,7 +60,6 @@ public class PongMessage implements ProtocolMessage {
 	// ACCESSORS (GETTERS AND SETTERS)
 	// =============================================================================================
 
-
 	public long getNonce() {
 		return this.nonce;
 	}
@@ -69,7 +67,6 @@ public class PongMessage implements ProtocolMessage {
 	public void setNonce(long nonce) {
 		this.nonce = nonce;
 	}
-
 
 	// =============================================================================================
 	// OBJECT OPERATIONS

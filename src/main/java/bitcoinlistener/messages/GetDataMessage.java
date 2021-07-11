@@ -1,4 +1,4 @@
- /*
+/*
  * Copyright (c) 2021, Henrique Teófilo
  * All rights reserved.
  * 
@@ -55,7 +55,6 @@ public class GetDataMessage implements ProtocolMessage {
 		throw new RuntimeException("not implemented");
 	}
 
-	
 	public void addObject(InvObject obj) {
 		list.add(obj);
 	}
@@ -63,7 +62,6 @@ public class GetDataMessage implements ProtocolMessage {
 	public boolean hasObjects() {
 		return !list.isEmpty();
 	}
-
 
 	// =============================================================================================
 	// ACCESSORS (GETTERS AND SETTERS)                                                              

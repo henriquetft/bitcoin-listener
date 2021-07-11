@@ -10,6 +10,7 @@ package bitcoinlistener;
 
 import bitcoinlistener.messages.TxMessage;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,15 +23,21 @@ public class BitcoinListener {
 
 	// Setting up logging system
 	static {
-		String path = BitcoinClient.class.getClassLoader().getResource(
-				"logging.properties").getFile();
-		System.setProperty("java.util.logging.config.file", path);
+		URL logProp = BitcoinClient.class.getClassLoader().getResource(
+				"logging.properties");
+		if (logProp != null) {
+			String path = logProp.getFile();
+			System.setProperty("java.util.logging.config.file", path);
+		} else {
+			System.err.println("logging properties not found");
+		}
 	}
 
 	private static final String IP = "localhost";
 	private static final int PORT = 8333;
 	private static final NetworkParameters NETWORK = NetworkParameters.TestNet3;
 
+	// =============================================================================================
 
 	public static void main(String[] args) throws Exception {
 
@@ -65,12 +72,10 @@ public class BitcoinListener {
 			}
 		});
 
-
 		c.connect();
 		Thread.sleep(1000);
 		System.out.println("Press [enter] to exit");
 		System.in.read();
 		c.disconnect();
-
 	}
 }

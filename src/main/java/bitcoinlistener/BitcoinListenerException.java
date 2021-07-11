@@ -1,4 +1,4 @@
- /*
+/*
  * Copyright (c) 2021, Henrique Teófilo
  * All rights reserved.
  * 
@@ -8,6 +8,9 @@
 
 package bitcoinlistener;
 
+/**
+ * Base exception for bitcoin-listener
+ */
 public class BitcoinListenerException extends RuntimeException {
 
 	public BitcoinListenerException() {

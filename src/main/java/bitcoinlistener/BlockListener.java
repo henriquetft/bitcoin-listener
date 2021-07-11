@@ -1,4 +1,4 @@
- /*
+/*
   * Copyright (c) 2021, Henrique Teófilo
   * All rights reserved.
   *
@@ -19,7 +19,7 @@
 	  * Invoked when a pair reports a new block.
 	  *
 	  * @param block Block
-	  * @param conn
+	  * @param conn {@link bitcoinlistener.BitcoinConnection}
 	  */
 	 void onBlock(BlockMessage block, BitcoinConnection conn);
  }

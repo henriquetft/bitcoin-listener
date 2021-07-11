@@ -1,4 +1,4 @@
- /*
+/*
  * Copyright (c) 2021, Henrique Teófilo
  * All rights reserved.
  * 
@@ -18,6 +18,9 @@ import bitcoinlistener.datatypes.TxOut;
 import bitcoinlistener.util.ByteUtil;
 import bitcoinlistener.util.HashUtil;
 
+/**
+ * This object describes a bitcoin transaction, in reply to getdata.
+ */
 public class TxMessage implements ProtocolMessage {
 
 	private int version; // int32_t
@@ -26,7 +29,6 @@ public class TxMessage implements ProtocolMessage {
 	private List<TxOut> txOutList;
 	private long lockTime;
 	private byte[] rawData;
-	
 	
 	// =============================================================================================
 	// CONSTRUCTORS                                                                                
@@ -39,8 +41,7 @@ public class TxMessage implements ProtocolMessage {
 	// =============================================================================================
 	// OPERATIONS                                                                                   
 	// =============================================================================================
-	
-	
+
 	@Override
 	public void loadFromBuffer(BitcoinBuffer buf) {
 		ByteOrder old = buf.getEndianness();
@@ -110,7 +111,6 @@ public class TxMessage implements ProtocolMessage {
 	// =============================================================================================
 	// OBJECT OPERATIONS                                                                           
 	// =============================================================================================
-	
 	
 	@Override
 	public String toString() {

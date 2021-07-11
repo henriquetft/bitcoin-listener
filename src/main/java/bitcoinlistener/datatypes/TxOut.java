@@ -1,4 +1,4 @@
- /*
+/*
  * Copyright (c) 2021, Henrique Teófilo
  * All rights reserved.
  * 
@@ -15,6 +15,9 @@ import bitcoinlistener.BitcoinBuffer;
 import bitcoinlistener.ProtocolData;
 import bitcoinlistener.util.ByteUtil;
 
+/**
+ * Transaction output
+ */
 public class TxOut implements ProtocolData {
 
 	private long value;      // int64_t
@@ -41,7 +44,6 @@ public class TxOut implements ProtocolData {
 			this.value = buf.getInt64();
 			BigInteger pkScriptLength = buf.getVarInt();
 			this.pkScript = buf.getBytes(pkScriptLength.intValue());
-			;
 
 		} finally {
 			buf.setEndianness(o);

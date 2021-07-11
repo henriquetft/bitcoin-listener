@@ -1,4 +1,4 @@
- /*
+/*
  * Copyright (c) 2021, Henrique Teófilo
  * All rights reserved.
  * 
@@ -14,6 +14,9 @@ import bitcoinlistener.BitcoinBuffer;
 import bitcoinlistener.ProtocolData;
 import bitcoinlistener.util.ByteUtil;
 
+/**
+ * It points to a specific output in a transaction.
+ */
 public class OutPoint implements ProtocolData {
 
 	/** The hash of the referenced transaction. */
@@ -47,7 +50,6 @@ public class OutPoint implements ProtocolData {
 			buf.setEndianness(o);
 		}
 	}
-	
 
 	@Override
 	public void writeToBuffer(BitcoinBuffer buf) {
@@ -70,16 +72,13 @@ public class OutPoint implements ProtocolData {
 		return hash;
 	}
 
-
 	public void setHash(byte[] hash) {
 		this.hash = hash;
 	}
 
-
 	public long getIndex() {
 		return index;
 	}
-
 
 	public void setIndex(long index) {
 		this.index = index;

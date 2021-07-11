@@ -102,7 +102,6 @@ public class BitcoinClient implements BitcoinConnection {
 		this.filterConfig.setFalsePositiveRate(DEFAULT_FALSE_POSITIVE_RATE);
 	}
 
-
 	// =============================================================================================
 	// OPERATIONS
 	// =============================================================================================
@@ -122,7 +121,6 @@ public class BitcoinClient implements BitcoinConnection {
 			lock.unlock();
 		}
 
-
 		// Start reading loop on another thread
 		new Thread(() -> {
 			try {
@@ -134,14 +132,8 @@ public class BitcoinClient implements BitcoinConnection {
 			} catch (Exception e) {
 				log.error("Error reading data", e);
 			} finally {
-				try {
-					out.close();
-				} catch (IOException e) {
-				}
-				try {
-					this.sock.close();
-				} catch (IOException e1) {
-				}
+				try {  out.close(); } catch (IOException e) { }
+				try { this.sock.close(); } catch (IOException e1) { }
 				log.info("Disconnected from {}:{}", ip, port);
 				fireConnectionEvent(ConnectionEvent.Disconnected);
 			}
@@ -228,11 +220,8 @@ public class BitcoinClient implements BitcoinConnection {
 		connListeners.add(connListener);
 	}
 
-
 	@Override
 	public void setFilterList(Collection<String> addresses) {
-		Collection<String> list = addresses;
-
 		filterLock.lock();
 		try {
 			filtered.clear();
@@ -242,7 +231,7 @@ public class BitcoinClient implements BitcoinConnection {
 		}
 
 		if (verackReceived) {
-			sendBloomFilter(list);
+			sendBloomFilter(addresses);
 		}
 	}
 
@@ -254,7 +243,6 @@ public class BitcoinClient implements BitcoinConnection {
 			filterLock.unlock();
 		}
 	}
-
 
 	// =============================================================================================
 	// ACCESSORS (GETTERS AND SETTERS)                                                             
@@ -321,11 +309,9 @@ public class BitcoinClient implements BitcoinConnection {
 		return this.services;
 	}
 
-
 	// =============================================================================================
 	// AUXILIARY METHODS
 	// =============================================================================================
-
 
 	private void readData() throws Exception {
 		ByteArrayOutputStream recvBuf = new ByteArrayOutputStream(1024);
@@ -394,7 +380,6 @@ public class BitcoinClient implements BitcoinConnection {
 			}
 		}
 	}
-
 
 	private void onMessageReceived(String cmd, byte[] message) throws Exception {
 		BitcoinBuffer messageBuffer = new BitcoinBuffer(message);
@@ -552,5 +537,4 @@ public class BitcoinClient implements BitcoinConnection {
 		sendMessage(filterLoadMessage);
 
 	}
-
 }

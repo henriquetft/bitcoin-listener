@@ -1,4 +1,4 @@
- /*
+/*
  * Copyright (c) 2021, Henrique Teófilo
  * All rights reserved.
  * 
@@ -15,6 +15,9 @@ import java.nio.ByteOrder;
 import bitcoinlistener.BitcoinBuffer;
 import bitcoinlistener.ProtocolData;
 
+/**
+ * Network address structure
+ */
 public class NetAddress implements ProtocolData {
 
 	// (12 bytes 00 00 00 00 00 00 00 00 00 00 FF FF, followed by the 4 bytes of the IPv4 address).

@@ -1,4 +1,4 @@
- /*
+/*
  * Copyright (c) 2021, Henrique Teófilo
  * All rights reserved.
  * 
@@ -19,7 +19,7 @@ public interface TransactionListener {
 	 * Invoked when a pair reports a new transaction.
 	 * 
 	 * @param tx Transaction
-	 * @param conn
+	 * @param conn {@link bitcoinlistener.BitcoinConnection}
 	 */
 	void onTransaction(TxMessage tx, BitcoinConnection conn);
 }

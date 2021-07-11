@@ -1,4 +1,4 @@
- /*
+/*
  * Copyright (c) 2021, Henrique Teófilo
  * All rights reserved.
  * 
@@ -13,6 +13,9 @@ import java.nio.ByteOrder;
 import bitcoinlistener.BitcoinBuffer;
 import bitcoinlistener.ProtocolData;
 
+/**
+ * var_str data type
+ */
 public class VarString implements ProtocolData {
 
 	private String string;
@@ -28,7 +31,6 @@ public class VarString implements ProtocolData {
 		this.string = s;
 	}
 
-	
 	// =============================================================================================
 	// OPERATIONS                                                            
 	// =============================================================================================
@@ -59,8 +61,7 @@ public class VarString implements ProtocolData {
 			buf.setEndianness(o);
 		}
 	}
-	
-	
+
 	// =============================================================================================
 	// ACCESSORS (GETTERS AND SETTERS)                                                              
 	// =============================================================================================
@@ -72,8 +73,7 @@ public class VarString implements ProtocolData {
 	public void setString(String string) {
 		this.string = string;
 	}
-	
-	
+
 	// =============================================================================================
 	// OBJECT OPERATIONS                                                                           
 	// =============================================================================================

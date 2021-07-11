@@ -12,7 +12,6 @@ import java.util.Collection;
 
 /**
  * A connection with a bitcoin node.
- *  
  */
 public interface BitcoinConnection {
 	
@@ -50,7 +49,7 @@ public interface BitcoinConnection {
 
 	/**
 	 * Sets up a filter config
-	 * @param filterConfig
+	 * @param filterConfig Filter configuration
 	 */
 	void setFilterConfig(FilterConfig filterConfig);
 

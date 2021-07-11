@@ -1,4 +1,4 @@
- /*
+/*
  * Copyright (c) 2021, Henrique Teófilo
  * All rights reserved.
  * 
@@ -32,8 +32,7 @@ public class VersionMessage implements ProtocolMessage {
 	private String subVer;         // VarString (?)
 	private int startHeight;       // int32_t   (4)
 	private boolean relay;         // bool      (1)
-	
-	
+
 	// =============================================================================================
 	// CONSTRUCTORS                                                                                
 	// =============================================================================================
@@ -56,7 +55,6 @@ public class VersionMessage implements ProtocolMessage {
 		this.relay = relay;
 	}
 
-	
 	public VersionMessage(int version, String subVer, boolean relay) {
 		this.version = version;
 		this.services = 0;
@@ -69,7 +67,6 @@ public class VersionMessage implements ProtocolMessage {
 		this.relay = relay;
 	}
 
-	
 	// =============================================================================================
 	/// OPERATIONS                                                                                
 	// =============================================================================================
@@ -78,7 +75,6 @@ public class VersionMessage implements ProtocolMessage {
 	public String getCommand() {
 		return "version";
 	}
-
 
 	public byte[] getBytes() {
 		BitcoinBuffer buf = new BitcoinBuffer(10000);
@@ -123,11 +119,9 @@ public class VersionMessage implements ProtocolMessage {
 
 			long nonce = buf.getUint64().longValue();
 
-			
 			VarString vStr = new VarString();
 			vStr.loadFromBuffer(buf);
 			String str = vStr.getString();
-
 
 			int height = -1;
 			if (version >= 209) {

@@ -1,4 +1,4 @@
- /*
+/*
  * Copyright (c) 2021, Henrique Teófilo
  * All rights reserved.
  * 
@@ -8,17 +8,19 @@
 
 package bitcoinlistener.messages;
 
-import java.nio.ByteOrder;
-
 import bitcoinlistener.BitcoinBuffer;
 import bitcoinlistener.ProtocolMessage;
 
+import java.nio.ByteOrder;
+
+/**
+ * The ping message. It is sent primarily to confirm that the TCP/IP connection is still valid.
+ */
 public class PingMessage implements ProtocolMessage {
 
 	private long nonce;
 	private boolean hasNonce;
-	
-	
+
 	// =============================================================================================
 	// CONSTRUCTORS                                                                                
 	// =============================================================================================
@@ -58,8 +60,7 @@ public class PingMessage implements ProtocolMessage {
 	// =============================================================================================
 	// ACCESSORS (GETTERS AND SETTERS)                                                              
 	// =============================================================================================
-	
-	
+
 	public long getNonce() {
 		return this.nonce;
 	}
@@ -67,8 +68,7 @@ public class PingMessage implements ProtocolMessage {
 	public boolean hasNonce() {
 		return this.hasNonce;
 	}
-	
-	
+
 	// =============================================================================================
 	// OBJECT OPERATIONS                                                                           
 	// =============================================================================================

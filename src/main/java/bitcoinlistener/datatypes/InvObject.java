@@ -1,4 +1,4 @@
- /*
+/*
  * Copyright (c) 2021, Henrique Teófilo
  * All rights reserved.
  * 
@@ -14,6 +14,9 @@ import bitcoinlistener.BitcoinBuffer;
 import bitcoinlistener.ProtocolData;
 import bitcoinlistener.util.ByteUtil;
 
+/**
+ * Inventory Object for {@link bitcoinlistener.messages.InvMessage}
+ */
 public class InvObject implements ProtocolData {
 	
 	private int type;           // uint32_t

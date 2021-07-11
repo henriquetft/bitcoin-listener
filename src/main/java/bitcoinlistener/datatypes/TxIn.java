@@ -1,4 +1,4 @@
- /*
+/*
  * Copyright (c) 2021, Henrique Teófilo
  * All rights reserved.
  * 
@@ -14,13 +14,15 @@ import bitcoinlistener.BitcoinBuffer;
 import bitcoinlistener.ProtocolData;
 import bitcoinlistener.util.ByteUtil;
 
+/**
+ * Transaction Input
+ */
 public class TxIn implements ProtocolData {
 
 	private OutPoint previousOutput; // outpoint (36)
 	private byte[] signatureScript;  // (var_int + uchar[])
 	private long sequence;           // uint32_t
-	
-	
+
 	// =============================================================================================
 	// CONSTRUCTORS                                                                                
 	// =============================================================================================
@@ -32,8 +34,7 @@ public class TxIn implements ProtocolData {
 	// =============================================================================================
 	// OPERATIONS                                                            
 	// =============================================================================================
-	
-	
+
 	@Override
 	public void loadFromBuffer(BitcoinBuffer buf) {
 		ByteOrder o = buf.getEndianness();
@@ -64,8 +65,7 @@ public class TxIn implements ProtocolData {
 			buf.setEndianness(old);
 		}
 	}
-	
-	
+
 	// =============================================================================================
 	// ACCESSORS (GETTERS AND SETTERS)                                                              
 	// =============================================================================================

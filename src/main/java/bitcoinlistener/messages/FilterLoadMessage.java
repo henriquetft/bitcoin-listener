@@ -1,4 +1,4 @@
- /*
+/*
  * Copyright (c) 2021, Henrique Teófilo
  * All rights reserved.
  * 
@@ -22,24 +22,24 @@ import bitcoinlistener.ProtocolMessage;
  */
 public class FilterLoadMessage implements ProtocolMessage {
 
- 	 	
 	/**
 	 * The filter itself is simply a bit field of arbitrary byte-aligned size. The
 	 * maximum size is 36,000 bytes
 	 */
 	private byte[] filter;                  // uint8_t[]
+
 	/**
 	 * The number of hash functions to use in this filter. The maximum value allowed
 	 * in this field is 50
 	 */
 	private long numHashFuncs;              // uint32_t (4)
+
 	/** A random value to add to the seed value in the hash function used by the bloom filter. */
 	private long tweak;                     // uint32_t (4)
 	
 	/** A set of flags that control how matched items are added to the filter. */
 	private byte flags;                     // uint8_t (1)
 
-	
 	// =============================================================================================
 	// CONSTRUCTORS                                                                                
 	// =============================================================================================
@@ -55,8 +55,7 @@ public class FilterLoadMessage implements ProtocolMessage {
 	public FilterLoadMessage() {
 		
 	}
-	
-	
+
 	// =============================================================================================
 	// OPERATIONS                                                            
 	// =============================================================================================

@@ -1,4 +1,4 @@
- /*
+/*
  * Copyright (c) 2021, Henrique Teófilo
  * All rights reserved.
  * 
@@ -13,7 +13,7 @@ package bitcoinlistener;
  */
 public interface ConnectionListener {
 	
-	public enum ConnectionEvent {
+	enum ConnectionEvent {
 		/** Socket connected */
 		Connected,
 		
@@ -26,8 +26,7 @@ public interface ConnectionListener {
 		 */
 		Verack,
 	}
-	
-	
+
 	/**
 	 * Invoked when an event occurs.
 	 * 
