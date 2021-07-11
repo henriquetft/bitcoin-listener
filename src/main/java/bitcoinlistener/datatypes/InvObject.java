@@ -8,21 +8,53 @@
 
 package bitcoinlistener.datatypes;
 
-import java.nio.ByteOrder;
-
 import bitcoinlistener.BitcoinBuffer;
 import bitcoinlistener.ProtocolData;
 import bitcoinlistener.util.ByteUtil;
+
+import java.nio.ByteOrder;
 
 /**
  * Inventory Object for {@link bitcoinlistener.messages.InvMessage}
  */
 public class InvObject implements ProtocolData {
-	
+
+	public enum InventoryTypes {
+		/**
+		 * Any data of with this number may be ignored
+		 */
+		ERROR(0),
+		/**
+		 * Hash is related to a transaction
+		 */
+		MSG_TX(1),
+		/**
+		 * Hash is related to a data block
+		 */
+		MSG_BLOCK(2),
+		/**
+		 * Hash of a block header; identical to MSG_BLOCK. Only to be used in getdata message.
+		 * Indicates the reply should be a merkleblock message rather than a block message; this
+		 * only works if a bloom filter has been set. See BIP 37 for more info.
+		 */
+		MSG_FILTERED_BLOCK(3);
+
+		private final int value;
+
+		InventoryTypes(final int value) {
+			this.value = value;
+		}
+
+		public int getValue() {
+			return value;
+		}
+	}
+
+	// =============================================================================================
+
 	private int type;           // uint32_t
 	private byte[] hash;        // char[32] 
 	private String hashAsStr;
-	
 	
 	// =============================================================================================
 	// CONSTRUCTORS                                                                                
@@ -36,7 +68,6 @@ public class InvObject implements ProtocolData {
 		this.type = type;
 		this.hash = hashObjArr;
 	}
-
 
 	// =============================================================================================
 	// OPERATIONS                                                                                
@@ -109,7 +140,7 @@ public class InvObject implements ProtocolData {
 	
 	@Override
 	public String toString() {
-		return getClass().getSimpleName() + " [type=" + type + ", hashAsStr=" + hashAsStr + "]";
+		return getClass().getSimpleName() + " [type=" + type + ", hashAsStr=" + getHashAsStr() + "]";
 	}
 
 }

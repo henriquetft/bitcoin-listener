@@ -403,8 +403,10 @@ public class BitcoinClient implements BitcoinConnection {
 		} else if (m instanceof VersionMessage) {
 			VersionMessage v = (VersionMessage) m;
 			this.services = v.getServices();
+			log.info("Peer: {}", this.getIp());
 			log.info("Peer services: {}", this.services);
-			log.info("Bloom filtering supported: {}", isBloomFilteringSupported());
+			log.info("Peer last block received: {}",  v.getStartHeight());
+			log.info("Peer Bloom filtering supported: {}", isBloomFilteringSupported());
 			this.protover = Math.min(v.getVersion(), MY_VERSION);
 			if (this.protover >= 209) {
 				sendMessage(new Verack());
@@ -414,9 +416,13 @@ public class BitcoinClient implements BitcoinConnection {
 			List<InvObject> list = ((InvMessage) m).getInvObjs();
 			GetDataMessage getdata = new GetDataMessage();
 			for (InvObject invObj : list) {
-				if (invObj.getType() == 1) {
+				log.debug("Inv object received: {}", invObj);
+				if (invObj.getType() == InvObject.InventoryTypes.MSG_TX.getValue()) {
 					getdata.addObject(invObj);
-				} else if (invObj.getType() == 2) {
+				} else if (invObj.getType() == InvObject.InventoryTypes.MSG_BLOCK.getValue()) {
+					if (hasFilter()) {
+						invObj.setType(InvObject.InventoryTypes.MSG_FILTERED_BLOCK.getValue());
+					}
 					getdata.addObject(invObj);
 				}
 			}
