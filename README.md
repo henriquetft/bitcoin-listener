@@ -18,6 +18,10 @@ c.addTransactionListener(new TransactionListener() {
 		System.out.println("New Trasaction: " + tx);
 	}
 });
-		
+
+c.addBlockListener((block, conn) -> {
+    System.out.println("New Block: " + block);
+});
+
 c.connect();
 ```

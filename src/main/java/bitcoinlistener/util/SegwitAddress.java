@@ -30,11 +30,13 @@ import java.io.ByteArrayOutputStream;
 
 
 public class SegwitAddress {
+
     /**
      * Helper for re-arranging bits into groups.
      */
-    public static byte[] convertBits(final byte[] in, final int inStart, final int inLen, final int fromBits,
-            final int toBits, final boolean pad) throws RuntimeException {
+    public static byte[] convertBits(final byte[] in, final int inStart, final int inLen,
+                                     final int fromBits,
+                                     final int toBits, final boolean pad) throws RuntimeException {
         int acc = 0;
         int bits = 0;
         ByteArrayOutputStream out = new ByteArrayOutputStream(64);
@@ -61,8 +63,7 @@ public class SegwitAddress {
         }
         return out.toByteArray();
     }
-    
-    
+
     /**
      * Returns the witness program in decoded form.
      * 

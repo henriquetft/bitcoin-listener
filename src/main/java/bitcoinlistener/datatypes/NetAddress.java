@@ -70,7 +70,6 @@ public class NetAddress implements ProtocolData {
 		} finally {
 			buf.setEndianness(old);
 		}
-		
 	}
 
 	@Override
@@ -90,9 +89,7 @@ public class NetAddress implements ProtocolData {
 		} finally {
 			buf.setEndianness(old);
 		}
-		
 	}
-
 	
 	// =============================================================================================
 	// OBJECT OPERATIONS                                                                           
@@ -103,5 +100,4 @@ public class NetAddress implements ProtocolData {
 		return getClass().getSimpleName() + " [services=" + services + ", ip=" + ip +
 				", port=" + port + "]";
 	}
-	
 }
