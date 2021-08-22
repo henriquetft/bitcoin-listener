@@ -9,28 +9,44 @@
 package bitcoinlistener.messages;
 
 import bitcoinlistener.BitcoinBuffer;
+import bitcoinlistener.datatypes.SHA256Hash;
+import bitcoinlistener.util.PartialMerkleTree;
 
 import java.nio.ByteOrder;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
- * This object describes a bitcoin block.
+ * This object describes the merkleblock message.
  * <p>
- * The block message is sent in response to a getdata message which requests transaction information
- * from a block hash.
+ * Provides a block header and partial merkle proof tree to show that the selected transaction
+ * hashes exist in the block.
  */
-public class BlockMessage extends AbstractBlockMessage {
+public class MerkleBlockMessage extends AbstractBlockMessage {
 
 	/**
-	 * Block transactions
+	 * Number of transactions in the block (including unmatched ones)
 	 */
-	private List<TxMessage> txList; // tx[]
+	private long totalTransactions;    // uint32_t
+
+	/**
+	 * Hashes in depth-first order
+	 */
+	private List<SHA256Hash> hashes;   // char[32]
+
+	/**
+	 * Flag bits, packed per 8 in a byte, least significant bit first. Extra 0 bits are padded
+	 * on to reach full byte size.
+	 */
+	private byte[] flags;
+
+	private PartialMerkleTree partialMerkleTree;
 
 	// =============================================================================================
 	// CONSTRUCTORS
 	// =============================================================================================
 
-	public BlockMessage() {
+	public MerkleBlockMessage() {
 
 	}
 
@@ -43,7 +59,12 @@ public class BlockMessage extends AbstractBlockMessage {
 		super.loadFromBuffer(buf);
 		ByteOrder o = buf.getEndianness();
 		try {
-			txList = buf.getVector(TxMessage.class);
+			buf.setEndianness(ByteOrder.LITTLE_ENDIAN);
+			this.totalTransactions = buf.getUint32();
+			// invert hashes bytes
+			this.hashes = buf.getVector(SHA256Hash.class).stream().map(x -> x.getInverted()).collect(
+					Collectors.toList());
+			this.flags = buf.getBytes(buf.getVarInt().intValue());
 		} finally {
 			buf.setEndianness(o);
 		}
@@ -56,7 +77,7 @@ public class BlockMessage extends AbstractBlockMessage {
 
 	@Override
 	public String getCommand() {
-		return "block";
+		return "merkleblock";
 	}
 
 	// =============================================================================================
@@ -64,12 +85,36 @@ public class BlockMessage extends AbstractBlockMessage {
 	// =============================================================================================
 
 
-	public List<TxMessage> getTxList() {
-		return txList;
+	public long getTotalTransactions() {
+		return totalTransactions;
 	}
 
-	public void setTxList(List<TxMessage> txList) {
-		this.txList = txList;
+	public void setTotalTransactions(long totalTransactions) {
+		this.totalTransactions = totalTransactions;
+	}
+
+	public List<SHA256Hash> getHashes() {
+		return hashes;
+	}
+
+	public void setHashes(List<SHA256Hash> hashes) {
+		this.hashes = hashes;
+	}
+
+	public byte[] getFlags() {
+		return flags;
+	}
+
+	public void setFlags(byte[] flags) {
+		this.flags = flags;
+	}
+
+	public PartialMerkleTree getPartialMerkleTree() {
+		return partialMerkleTree;
+	}
+
+	public void setPartialMerkleTree(PartialMerkleTree partialMerkleTree) {
+		this.partialMerkleTree = partialMerkleTree;
 	}
 
 	// =============================================================================================
@@ -79,6 +124,7 @@ public class BlockMessage extends AbstractBlockMessage {
 	@Override
 	public String toString() {
 		return getClass().getSimpleName() + " [hash=" + getHashAsStr() + ", version=" + getVersion() +
+			   ", totalTransactions=" + totalTransactions +
 			   ", prevBlock=" + getPrevBlock() + ", merkleRoot=" + getMerkleRoot() +
 			   ", timestamp=" + getTimestamp() + ", bits=" + getBits() + ", nonce=" + getNonce() + "]";
 	}

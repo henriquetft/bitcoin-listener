@@ -15,12 +15,13 @@ import bitcoinlistener.ProtocolMessage;
  * The verack message is sent in reply to version. This message consists of only
  * a message header with the command string "verack".
  */
-public class Verack implements ProtocolMessage {
+public class VerackMessage implements ProtocolMessage {
 
 	// =============================================================================================
 	// CONSTRUCTORS                                                                                
 	// =============================================================================================
-	public Verack() {
+
+	public VerackMessage() {
 		
 	}
 	

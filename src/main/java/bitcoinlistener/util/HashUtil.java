@@ -10,8 +10,9 @@ package bitcoinlistener.util;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 
-public class HashUtil {
+ public class HashUtil {
 	
 	public static byte[] sha256(byte[] arr) {
 		try {
@@ -21,6 +22,12 @@ public class HashUtil {
 		} catch (NoSuchAlgorithmException e) {
 			throw new RuntimeException(e);
 		}
+	}
+
+	public static byte[] sha256(byte[] first, byte[] second) {
+		byte[] both = Arrays.copyOf(first, first.length + second.length);
+		System.arraycopy(second, 0, both, first.length, second.length);
+		return sha256(both);
 	}
 
 	public static int murmurHash3(int nbits, long nTweak, int hashNum, byte[] data) {

@@ -19,19 +19,22 @@ import java.nio.ByteOrder;
  */
 public class InvObject implements ProtocolData {
 
-	public enum InventoryTypes {
+	public enum InventoryType {
 		/**
 		 * Any data of with this number may be ignored
 		 */
 		ERROR(0),
+
 		/**
 		 * Hash is related to a transaction
 		 */
 		MSG_TX(1),
+
 		/**
 		 * Hash is related to a data block
 		 */
 		MSG_BLOCK(2),
+
 		/**
 		 * Hash of a block header; identical to MSG_BLOCK. Only to be used in getdata message.
 		 * Indicates the reply should be a merkleblock message rather than a block message; this
@@ -41,19 +44,33 @@ public class InvObject implements ProtocolData {
 
 		private final int value;
 
-		InventoryTypes(final int value) {
+		InventoryType(final int value) {
 			this.value = value;
 		}
 
 		public int getValue() {
 			return value;
 		}
+
+		public static InventoryType fromValue(int value) {
+			for (InventoryType inventoryType : InventoryType.values()) {
+				if (inventoryType.value == value) {
+					return inventoryType;
+				}
+			}
+			return null;
+		}
+
+		@Override
+		public String toString() {
+			return "" + value;
+		}
 	}
 
 	// =============================================================================================
 
-	private int type;           // uint32_t
-	private byte[] hash;        // char[32] 
+	private InventoryType type;  // uint32_t
+	private byte[] hash;          // char[32]
 	private String hashAsStr;
 	
 	// =============================================================================================
@@ -64,7 +81,7 @@ public class InvObject implements ProtocolData {
 		
 	}
 	
-	public InvObject(int type, byte[] hashObjArr) {
+	public InvObject(InventoryType type, byte[] hashObjArr) {
 		this.type = type;
 		this.hash = hashObjArr;
 	}
@@ -81,7 +98,7 @@ public class InvObject implements ProtocolData {
 			int type = buf.getInt32();
 			byte[] hashObjArr = buf.getBytes(32);
 
-			this.type = type;
+			this.type = InventoryType.fromValue(type);
 			this.hash = hashObjArr;
 
 		} finally {
@@ -94,7 +111,7 @@ public class InvObject implements ProtocolData {
 		ByteOrder o = buf.getEndianness();
 		try {
 			buf.setEndianness(ByteOrder.LITTLE_ENDIAN);
-			buf.putInt32(this.type);
+			buf.putInt32(this.type.getValue());
 			buf.putBytes(hash);
 		} finally {
 			buf.setEndianness(o);
@@ -106,14 +123,13 @@ public class InvObject implements ProtocolData {
 	// ACCESSORS (GETTERS AND SETTERS)                                                              
 	// =============================================================================================
 	
-	public int getType() {
+	public InventoryType getType() {
 		return type;
 	}
 
-	public void setType(int type) {
+	public void setType(InventoryType type) {
 		this.type = type;
 	}
-
 
 	public byte[] getHash() {
 		return hash;

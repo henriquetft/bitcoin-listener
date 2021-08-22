@@ -42,6 +42,18 @@ public class BitcoinBuffer extends MyBuffer {
 	public void putData(ProtocolData data) {
 		data.writeToBuffer(this);
 	}
+
+	public <T extends ProtocolData> T getData(Class<T> clazz) {
+		try {
+			T obj = clazz.newInstance();
+			obj.loadFromBuffer(this);
+			return obj;
+		} catch (InstantiationException e) {
+			throw new RuntimeException(e);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+	}
 	
 	public void putVarInt(BigInteger v) {
 		byte[] varIntBytes = BitcoinBuffer.getVarInt(v);

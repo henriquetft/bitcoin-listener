@@ -36,15 +36,16 @@ public class BlockMessageTest {
 		System.out.println(block);
 
 		assertEquals("0000000000000027b3f5f330ea2930861cf52a5cd25ecbdc08ed29bad2dd1da3",
-					 block.getHash());
+					 block.getHashAsStr());
 		assertEquals(0x20400004, block.getVersion());
 		assertEquals("000000000000000115e4e338b7bb40b52dd89e54175d13d3507e0ab860792ab4",
-					 block.getPrevBlockHash());
+					 block.getPrevBlock().getHashAsStr());
 		assertEquals("87a1061a62d7572692584c0d149fd87c0d90d55d61329f6ada8ba553bb53074f",
-					 block.getMerkleRootHash());
+					 block.getMerkleRoot().getHashAsStr());
 		assertEquals(1625590591, block.getTimestamp());
 		assertEquals(424366641, block.getBits());
 		assertEquals(3137678905L, block.getNonce());
 		assertEquals(110, block.getTxList().size());
+		assertEquals(17806, buffer.getPosition());
 	}
 }

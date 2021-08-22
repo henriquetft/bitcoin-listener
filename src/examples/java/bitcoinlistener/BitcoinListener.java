@@ -8,6 +8,7 @@
 
 package bitcoinlistener;
 
+import bitcoinlistener.messages.MerkleBlockMessage;
 import bitcoinlistener.messages.TxMessage;
 
 import java.net.URL;
@@ -45,7 +46,7 @@ public class BitcoinListener {
 		List<String> filtered = new ArrayList<>();
 
 //		// Setting up filters
-//		filtered.add("muBB8CVDwX3ujEZ9LgahA3ebx38buaJp1Y");
+//		filtered.add("mvQeLdgYBxVi11nE38DM2BkJu7vE161Mqr");
 //		filtered.add("tb1qn7xylvtxa6jw9pqc729eqac274sygltcaay8wp");
 //		c.setFilterList(filtered);
 
@@ -60,6 +61,10 @@ public class BitcoinListener {
 		// Setting up an observer to receive new blocks
 		c.addBlockListener((block, conn) -> {
 			System.out.println("New Block: " + block);
+			if (block instanceof MerkleBlockMessage) {
+				System.out.println("Merkle block. Matched txns: " +
+								   ((MerkleBlockMessage) block).getPartialMerkleTree().getMatchedTxIds());
+			}
 		});
 
 		// Setting up an observer to receive connection events

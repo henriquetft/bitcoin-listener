@@ -8,18 +8,17 @@
 
  package bitcoinlistener;
 
- import bitcoinlistener.messages.BlockMessage;
+ import bitcoinlistener.messages.AbstractBlockMessage;
 
- /**
+/**
   * The listener interface for receiving block message.
   */
  public interface BlockListener {
 
 	 /**
 	  * Invoked when a pair reports a new block.
-	  *
-	  * @param block Block
-	  * @param conn {@link bitcoinlistener.BitcoinConnection}
+	  *  @param block Block
+	  * @param conn {@link BitcoinConnection}
 	  */
-	 void onBlock(BlockMessage block, BitcoinConnection conn);
+	 void onBlock(AbstractBlockMessage block, BitcoinConnection conn);
  }

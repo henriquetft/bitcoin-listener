@@ -10,8 +10,11 @@ package bitcoinlistener.util;
 
 import java.nio.ByteBuffer;
 import java.security.SecureRandom;
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.List;
 
-public class ByteUtil {
+ public class ByteUtil {
 
 	public static boolean compareArray(byte[] big, int posBig, byte[] small, int number) {
 		for (int x = 0; x < number; x++) {
@@ -24,7 +27,7 @@ public class ByteUtil {
 
 	public static int intFromBytes(byte[] bytes) {
 		return ((bytes[3] & 0xFF) << 24) | ((bytes[2] & 0xFF) << 16) | ((bytes[1] & 0xFF) << 8)
-				| ((bytes[0] & 0xFF) << 0);
+			   | ((bytes[0] & 0xFF) << 0);
 	}
 
 	public static byte[] slice(byte[] arr, int pos, int size) {
@@ -96,4 +99,23 @@ public class ByteUtil {
 		return hex.toString();
 	}
 
+	// from stackoverflow
+	public static byte[] hexStringToByteArray(String s) {
+		int len = s.length();
+		byte[] data = new byte[len / 2];
+		for (int i = 0; i < len; i += 2) {
+			data[i / 2] = (byte) ((Character.digit(s.charAt(i), 16) << 4)
+								  + Character.digit(s.charAt(i+1), 16));
+		}
+		return data;
+	}
+
+	 public static List<Boolean> getFlagList(byte[] flags) {
+		 List<Boolean> flagList = new ArrayList<>();
+		 BitSet bs = BitSet.valueOf(flags);
+		 for (int i = 0; i < flags.length * 8; i++) {
+			 flagList.add(bs.get(i));
+		 }
+		 return flagList;
+	 }
 }

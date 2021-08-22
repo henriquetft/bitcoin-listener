@@ -13,10 +13,7 @@ import bitcoinlistener.datatypes.InvObject;
 import bitcoinlistener.datatypes.TxIn;
 import bitcoinlistener.datatypes.TxOut;
 import bitcoinlistener.messages.*;
-import bitcoinlistener.util.AddressUtil;
-import bitcoinlistener.util.BloomFilter;
-import bitcoinlistener.util.ByteUtil;
-import bitcoinlistener.util.HashUtil;
+import bitcoinlistener.util.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,6 +27,7 @@ import java.nio.ByteOrder;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
 
 /**
  * Concrete class representing and managing a connection to a bitcoin node
@@ -50,8 +48,9 @@ public class BitcoinClient implements BitcoinConnection {
 		protocolMessages.put("inv", InvMessage.class);
 		protocolMessages.put("ping", PingMessage.class);
 		protocolMessages.put("tx", TxMessage.class);
-		protocolMessages.put("verack", Verack.class);
+		protocolMessages.put("verack", VerackMessage.class);
 		protocolMessages.put("block", BlockMessage.class);
+		protocolMessages.put("merkleblock", MerkleBlockMessage.class);
 	}
 
 	// =============================================================================================
@@ -76,7 +75,7 @@ public class BitcoinClient implements BitcoinConnection {
 	private long services;
 
 	/**
-	 * Indicates whether until both peers have exchanged their version
+	 * Indicates whether both peers have exchanged their version
 	 */
 	private volatile boolean verackReceived = false;
 
@@ -90,7 +89,7 @@ public class BitcoinClient implements BitcoinConnection {
 
 
 	// =============================================================================================
-	// CONSTRUCTORS                                                                                
+	// CONSTRUCTORS
 	// =============================================================================================
 
 	public BitcoinClient(String ip, int port, NetworkParameters net) {
@@ -222,6 +221,7 @@ public class BitcoinClient implements BitcoinConnection {
 
 	@Override
 	public void setFilterList(Collection<String> addresses) {
+		// FIXME implement message filterclear !!!
 		filterLock.lock();
 		try {
 			filtered.clear();
@@ -395,7 +395,7 @@ public class BitcoinClient implements BitcoinConnection {
 		ProtocolMessage m = clazz.newInstance();
 		m.loadFromBuffer(messageBuffer);
 
-		if (m instanceof Verack) {
+		if (m instanceof VerackMessage) {
 			verackReceived = true;
 			fireConnectionEvent(ConnectionEvent.Verack);
 			sendBloomFilter();
@@ -409,7 +409,7 @@ public class BitcoinClient implements BitcoinConnection {
 			log.info("Peer Bloom filtering supported: {}", isBloomFilteringSupported());
 			this.protover = Math.min(v.getVersion(), MY_VERSION);
 			if (this.protover >= 209) {
-				sendMessage(new Verack());
+				sendMessage(new VerackMessage());
 			}
 
 		} else if (m instanceof InvMessage) {
@@ -417,11 +417,11 @@ public class BitcoinClient implements BitcoinConnection {
 			GetDataMessage getdata = new GetDataMessage();
 			for (InvObject invObj : list) {
 				log.debug("Inv object received: {}", invObj);
-				if (invObj.getType() == InvObject.InventoryTypes.MSG_TX.getValue()) {
+				if (invObj.getType() == InvObject.InventoryType.MSG_TX) {
 					getdata.addObject(invObj);
-				} else if (invObj.getType() == InvObject.InventoryTypes.MSG_BLOCK.getValue()) {
+				} else if (invObj.getType() == InvObject.InventoryType.MSG_BLOCK) {
 					if (hasFilter()) {
-						invObj.setType(InvObject.InventoryTypes.MSG_FILTERED_BLOCK.getValue());
+						invObj.setType(InvObject.InventoryType.MSG_FILTERED_BLOCK);
 					}
 					getdata.addObject(invObj);
 				}
@@ -452,11 +452,32 @@ public class BitcoinClient implements BitcoinConnection {
 
 		} else if (m instanceof BlockMessage) {
 			BlockMessage block = (BlockMessage) m;
-			log.info(
-					"---------------------------------------------------------------------------");
-			log.info("Block received {}", block.getHash());
+			log.info("---------------------------------------------------------------------------");
+			log.info("Block received {}", block.getHashAsStr());
 			log.info(block.toString());
 			log.info("---------------------------------------------------------------------------");
+			fireBlockEvent(block);
+
+		} else if (m instanceof MerkleBlockMessage) {
+			MerkleBlockMessage block = (MerkleBlockMessage) m;
+			log.info("---------------------------------------------------------------------------");
+			log.info("Merkle Block received {}", block.getHashAsStr());
+			log.info(block.toString());
+			log.info("---------------------------------------------------------------------------");
+			PartialMerkleTree pmt = new PartialMerkleTree(block.getHashes(),
+														  block.getTotalTransactions(),
+														  ByteUtil.getFlagList(block.getFlags()));
+			try {
+				pmt.build();
+				if (!pmt.getMerkleRoot().equals(block.getMerkleRoot())) {
+					throw new RuntimeException("Computed merkle root not equals to block header");
+				}
+				log.info("Matched txns: " + pmt.getMatchedTxIds());
+			} catch (Exception ex) {
+				ex.printStackTrace();
+				log.warn("MerkleBlock is invalid: " + ex.getMessage());
+			}
+			block.setPartialMerkleTree(pmt);
 			fireBlockEvent(block);
 		}
 	}
@@ -473,7 +494,7 @@ public class BitcoinClient implements BitcoinConnection {
 		}
 	}
 
-	private void fireBlockEvent(BlockMessage block) {
+	private void fireBlockEvent(AbstractBlockMessage block) {
 		for (BlockListener blockListener : blockListeners) {
 			try {
 				blockListener.onBlock(block, this);
@@ -523,8 +544,8 @@ public class BitcoinClient implements BitcoinConnection {
 		}
 
 		this.filter = new BloomFilter(addressList.size() * 2,
-									  filterConfig.getFalsePositiveRate(),
-									  System.currentTimeMillis());
+		                              filterConfig.getFalsePositiveRate(),
+		                              System.currentTimeMillis());
 
 		for (String addr : addressList) {
 			byte[] bytes = AddressUtil.getAddrHash(addr);
@@ -535,12 +556,11 @@ public class BitcoinClient implements BitcoinConnection {
 
 
 		FilterLoadMessage filterLoadMessage = new FilterLoadMessage(filter.getAsArray(),
-																	filter.getNumberOfHashFuncs(),
-																	filter.getNonce(),
-																	// BLOOM_UPDATE_P2PUBKEY_ONLY
-																	(byte) 2);
+		                                                            filter.getNumberOfHashFuncs(),
+		                                                            filter.getNonce(),
+		                                                            // BLOOM_UPDATE_P2PUBKEY_ONLY
+		                                                            (byte) 2);
 
 		sendMessage(filterLoadMessage);
-
 	}
 }
